@@ -23,5 +23,15 @@ namespace BSLCustomerPortalAPI.Controllers
             objResp = _DALProduct.Fn_Get_Yarn_GDType(objReq);
             return objResp;
         }
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/ProductAPI/Fn_Get_Search_Yarn")]
+        public List<clsYarn> Fn_Get_Search_Yarn(clsYarn objReq)
+        {
+            List<clsYarn> objResp = new List<clsYarn>();
+            objResp = _DALProduct.Fn_Get_Search_Yarn(objReq);
+            return objResp;
+        }
+
     }
 }
