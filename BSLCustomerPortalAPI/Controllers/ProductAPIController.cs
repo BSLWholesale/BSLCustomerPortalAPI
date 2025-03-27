@@ -34,6 +34,24 @@ namespace BSLCustomerPortalAPI.Controllers
         }
 
         [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/ProductAPI/Fn_Get_Fabric_Blend")]
+        public List<clsFabric> Fn_Get_Fabric_Blend(clsFabric objReq)
+        {
+            List<clsFabric> objResp = new List<clsFabric>();
+            objResp = _DALProduct.Fn_Get_Fabric_Blend(objReq);
+            return objResp;
+        }
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/ProductAPI/Fn_Get_Search_Fabric")]
+        public List<clsFabric> Fn_Get_Search_Fabric(clsFabric objReq)
+        {
+            List<clsFabric> objResp = new List<clsFabric>();
+            objResp = _DALProduct.Fn_Get_Search_Fabric(objReq);
+            return objResp;
+        }
+
+        [System.Web.Http.HttpPost]
         [System.Web.Http.Route("api/ProductAPI/Fn_Get_Yarn_CatalogueDetail")]
         public List<clsYarn> Fn_Get_Yarn_CatalogueDetail(clsYarn objReq)
         {
@@ -41,6 +59,7 @@ namespace BSLCustomerPortalAPI.Controllers
             _YarnCatalogue = _DALProduct.Fn_Get_Yarn_CatalogueDetail(objReq);
             return _YarnCatalogue;
         }
+
 
     }
 }
