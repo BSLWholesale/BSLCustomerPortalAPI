@@ -33,5 +33,23 @@ namespace BSLCustomerPortalAPI.Controllers
             return objResp;
         }
 
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/ProductAPI/Fn_Get_Fabric_Blend")]
+        public List<clsFabric> Fn_Get_Fabric_Blend(clsFabric objReq)
+        {
+            List<clsFabric> objResp = new List<clsFabric>();
+            objResp = _DALProduct.Fn_Get_Fabric_Blend(objReq);
+            return objResp;
+        }
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/ProductAPI/Fn_Get_Search_Fabric")]
+        public List<clsFabric> Fn_Get_Search_Fabric(clsFabric objReq)
+        {
+            List<clsFabric> objResp = new List<clsFabric>();
+            objResp = _DALProduct.Fn_Get_Search_Fabric(objReq);
+            return objResp;
+        }
+
     }
 }
