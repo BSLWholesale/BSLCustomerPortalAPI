@@ -33,5 +33,14 @@ namespace BSLCustomerPortalAPI.Controllers
             return objResp;
         }
 
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/ProductAPI/Fn_Get_Yarn_CatalogueDetail")]
+        public List<clsYarn> Fn_Get_Yarn_CatalogueDetail(clsYarn objReq)
+        {
+            var _YarnCatalogue = new List<clsYarn>();
+            _YarnCatalogue = _DALProduct.Fn_Get_Yarn_CatalogueDetail(objReq);
+            return _YarnCatalogue;
+        }
+
     }
 }
