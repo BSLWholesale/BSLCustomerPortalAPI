@@ -60,6 +60,13 @@ namespace BSLCustomerPortalAPI.Controllers
             return _YarnCatalogue;
         }
 
-
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/ProductAPI/Fn_Get_Garments_Category")]
+        public List<clsGarments> Fn_Get_Garments_Category(clsGarments objReq)
+        {
+            List<clsGarments> objResp = new List<clsGarments>();
+            objResp = _DALProduct.Fn_Get_Garments_Category(objReq);
+            return objResp;
+        }
     }
 }

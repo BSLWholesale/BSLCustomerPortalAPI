@@ -196,11 +196,19 @@ namespace BSLCustomerPortalAPI.Data_Access_Layer
                 {
                     strSql = strSql + " AND BlendDescription = @BlendDescription";
                 }
+                if (!String.IsNullOrWhiteSpace(objReq.MaterialCode))
+                {
+                    strSql = strSql + " AND MaterialCode = @MaterialCode";
+                }
                 SqlCommand cmd = new SqlCommand(strSql, con);
                 cmd.CommandType = CommandType.Text;
                 if (!String.IsNullOrWhiteSpace(objReq.BlendDescription))
                 {
                     cmd.Parameters.AddWithValue("@BlendDescription", objReq.BlendDescription);
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.MaterialCode))
+                {
+                    cmd.Parameters.AddWithValue("@MaterialCode", objReq.MaterialCode);
                 }
 
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
@@ -217,7 +225,11 @@ namespace BSLCustomerPortalAPI.Data_Access_Layer
                         obj.BlendDescription = Convert.ToString(ds.Tables[0].Rows[i]["BlendDescription"]);
                         obj.BlendValue = Convert.ToString(ds.Tables[0].Rows[i]["BlendValue"]);
                         obj.WeaveType = Convert.ToString(ds.Tables[0].Rows[i]["WeaveType"]);
-                        obj.GSM = Convert.ToInt32(ds.Tables[0].Rows[i]["GSM"]);
+                        string GSM = Convert.ToString(ds.Tables[0].Rows[i]["GSM"]);
+                        if(!String.IsNullOrWhiteSpace(GSM))
+                        {
+                            obj.GSM = Convert.ToInt32(GSM);
+                        }
                         obj.StrechType = Convert.ToString(ds.Tables[0].Rows[i]["StrechType"]);
                         obj.DesignPattern = Convert.ToString(ds.Tables[0].Rows[i]["DesignPattern"]);
                         obj.Usage = Convert.ToString(ds.Tables[0].Rows[i]["Usage"]);
@@ -377,7 +389,49 @@ namespace BSLCustomerPortalAPI.Data_Access_Layer
             return _YarnCatalogue;
         }
 
+        public List<clsGarments> Fn_Get_Garments_Category(clsGarments objReq)
+        {
+            List<clsGarments> objResp = new List<clsGarments>();
+            var obj = new clsGarments();
+            try
+            {
+                if (con.State == ConnectionState.Broken) { con.Close(); }
+                if (con.State == ConnectionState.Closed) { con.Open(); }
 
+                string strSql = "Select Distinct Categoy from RMGMaster";
+                SqlDataAdapter da = new SqlDataAdapter(strSql, con);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+                int i = 0;
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        obj = new clsGarments();
+                        obj.Category = Convert.ToString(ds.Tables[0].Rows[i]["Categoy"]);
+                        obj.vErrorMsg = "Success";
+                        objResp.Add(obj);
+                        i++;
+                    }
+                }
+                else
+                {
+                    obj.vErrorMsg = "No Record Found";
+                    objResp.Add(obj);
+                }
+            }
+            catch (Exception exp)
+            {
+                Logger.WriteLog("Function Name : Fn_Get_Garments_Category", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                obj.vErrorMsg = exp.Message.ToString();
+                objResp.Add(obj);
+            }
+            finally
+            {
+                con.Close();
+            }
+            return objResp;
+        }
 
     }
 }
