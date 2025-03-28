@@ -88,5 +88,15 @@ namespace BSLCustomerPortalAPI.Controllers
         }
 
 
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/ProductAPI/Fn_Get_RMG_CatalogueDetail")]
+        public List<clsGarments> Fn_Get_RMG_CatalogueDetail(clsGarments objReq)
+        {
+            var _RMGCatalogue = new List<clsGarments>();
+            _RMGCatalogue = _DALProduct.Fn_Get_RMG_CatalogueDetail(objReq);
+            return _RMGCatalogue;
+        }
+
+
     }
 }

@@ -82,9 +82,9 @@ namespace BSLCustomerPortalAPI.Models
         public string SpecialFeature { get; set; }
         public string OldMaterialCode { get; set; }
         public string Style { get; set; }
-
         public string QueryType { get; set; }
         public string vQuery { get; set; }
+        public string vTBLName { get; set; }
         public string vErrorMsg { get; set; }
     }
 }

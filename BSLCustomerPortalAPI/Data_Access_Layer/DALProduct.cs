@@ -650,5 +650,131 @@ namespace BSLCustomerPortalAPI.Data_Access_Layer
             }
             return _FabricCatalgoue;
         }
+
+
+        public List<clsGarments> Fn_Get_RMG_CatalogueDetail(clsGarments objReq)
+        {
+            var _RMGCatalogue = new List<clsGarments>();
+            string strSql = "";
+            try
+            {
+                if (objReq.vTBLName == "Archieve")
+                {
+                    strSql = "SELECT * FROM RMGMasterArchieve WHERE 1=1";
+                }
+                else
+                {
+                    strSql = "SELECT TOP 100 * FROM RMGMaster WHERE 1=1";
+                }
+
+                if (!String.IsNullOrWhiteSpace(objReq.Category))
+                {
+                    strSql = strSql + " AND Categoy='" + objReq.Category + "'";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.Products))
+                {
+                    strSql = strSql + " AND Products='" + objReq.Products + "'";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.Ranges))
+                {
+                    strSql = strSql + " AND Ranges='" + objReq.Ranges + "'";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.Fabricblends))
+                {
+                    strSql = strSql + " AND Fabricblends='" + objReq.Fabricblends + "'";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.Fabrictype))
+                {
+                    strSql = strSql + " AND Fabrictype='" + objReq.Fabrictype + "'";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.Season))
+                {
+                    strSql = strSql + " AND Season='" + objReq.Season + "'";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.MaterialCode))
+                {
+                    strSql = strSql + " AND MaterialCode='" + objReq.MaterialCode + "'";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.PieceNo))
+                {
+                    strSql = strSql + " AND PieceNo='" + objReq.PieceNo + "'";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.Fabricquality))
+                {
+                    strSql = strSql + " AND Fabricquality='" + objReq.Fabricquality + "'";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.Fabricgsm))
+                {
+                    strSql = strSql + " AND Fabricgsm='" + objReq.Fabricgsm + "'";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.Fabricshade))
+                {
+                    strSql = strSql + " AND Fabricshade='" + objReq.Fabricshade + "'";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.SpecialFeature))
+                {
+                    strSql = strSql + " and SpecialFeature LIKE '%" + objReq.SpecialFeature + "%'";
+                }
+                strSql = strSql + " ORDER BY createdOn DESC";
+
+                if (con.State == ConnectionState.Broken)
+                { con.Close(); }
+                if (con.State == ConnectionState.Closed)
+                { con.Open(); }
+
+                SqlDataAdapter da = new SqlDataAdapter(strSql, con);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+
+                int i = 0;
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        var RMGCatalogue = new clsGarments();
+                        RMGCatalogue.MaterialCode = Convert.ToString(ds.Tables[0].Rows[i][0]);
+                        RMGCatalogue.MaterialDescription = Convert.ToString(ds.Tables[0].Rows[i][1]);
+                        RMGCatalogue.Category = Convert.ToString(ds.Tables[0].Rows[i][2]);
+                        RMGCatalogue.Products = Convert.ToString(ds.Tables[0].Rows[i][3]);
+                        RMGCatalogue.Ranges = Convert.ToString(ds.Tables[0].Rows[i][4]);
+                        RMGCatalogue.Fabricblends = Convert.ToString(ds.Tables[0].Rows[i][5]);
+                        RMGCatalogue.Fabrictype = Convert.ToString(ds.Tables[0].Rows[i][6]);
+                        RMGCatalogue.Season = Convert.ToString(ds.Tables[0].Rows[i][7]);
+                        RMGCatalogue.PieceNo = Convert.ToString(ds.Tables[0].Rows[i][8]);
+                        RMGCatalogue.Fabricquality = Convert.ToString(ds.Tables[0].Rows[i][9]);
+                        RMGCatalogue.Fabricgsm = Convert.ToString(ds.Tables[0].Rows[i][10]);
+                        RMGCatalogue.Fabricshade = Convert.ToString(ds.Tables[0].Rows[i][11]);
+                        RMGCatalogue.SpecialFeature = Convert.ToString(ds.Tables[0].Rows[i]["SpecialFeature"]);
+                        RMGCatalogue.Style = Convert.ToString(ds.Tables[0].Rows[i]["Style"]);
+
+                        RMGCatalogue.vErrorMsg = "Success";
+                        
+                        _RMGCatalogue.Add(RMGCatalogue);
+                        i++;
+                    }
+                }
+                else
+                {
+                    var RMGCatalogue = new clsGarments();
+                    RMGCatalogue.vErrorMsg = "No RMG Items Found.";
+                    _RMGCatalogue.Add(RMGCatalogue);
+                }
+            }
+            catch (Exception exp)
+            {
+                Logger.WriteLog("Function Name : Fn_Get_Garments_Detail", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                var RMGCatalogue = new clsGarments();
+                RMGCatalogue.vErrorMsg = exp.Message.ToString();
+                _RMGCatalogue.Add(RMGCatalogue);
+            }
+            finally
+            {
+                con.Close();
+            }
+            return _RMGCatalogue;
+        }
+
+
+
     }
 }
