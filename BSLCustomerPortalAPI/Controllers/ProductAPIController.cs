@@ -61,5 +61,15 @@ namespace BSLCustomerPortalAPI.Controllers
         }
 
 
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/ProductAPI/Fn_Get_Fabric_CatalogueDetail")]
+        public List<clsFabric> Fn_Get_Fabric_CatalogueDetail(clsFabric objReq)
+        {
+            var _FabricCatalogue = new List<clsFabric>();
+            _FabricCatalogue = _DALProduct.Fn_Get_Fabric_CatalogueDetail(objReq);
+            return _FabricCatalogue;
+        }
+
+
     }
 }

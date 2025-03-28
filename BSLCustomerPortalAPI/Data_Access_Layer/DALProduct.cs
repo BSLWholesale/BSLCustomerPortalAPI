@@ -378,6 +378,144 @@ namespace BSLCustomerPortalAPI.Data_Access_Layer
         }
 
 
+        public List<clsFabric> Fn_Get_Fabric_CatalogueDetail(clsFabric objReq)
+        {
+            var _FabricCatalgoue = new List<clsFabric>();
+            string strSql = "";
+            try
+            {
+                if (objReq.vTBLName == "Archieve")
+                {
+                    strSql = "SELECT * FROM MaterialMastArchieve WHERE 1=1";
+                }
+                else
+                {
+                    strSql = "SELECT TOP 100 * FROM MaterialMast WHERE 1=1";
+                }
 
+                if (!String.IsNullOrWhiteSpace(objReq.BlendDescription))
+                {
+                    strSql = strSql + " AND BlendDescription ='" + objReq.BlendDescription + "'";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.WeaveType))
+                {
+                    strSql = strSql + " AND WeaveType ='" + objReq.WeaveType + "'";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.StrechType))
+                {
+                    strSql = strSql + " AND StrechType ='" + objReq.StrechType + "'";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.DesignPattern))
+                {
+                    strSql = strSql + " AND DesignPattern ='" + objReq.DesignPattern + "'";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.Shade))
+                {
+                    strSql = strSql + " AND Shade ='" + objReq.Shade + "'";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.Usage))
+                {
+                    strSql = strSql + " AND Usage ='" + objReq.Usage + "'";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.MaterialCode))
+                {
+                    strSql = strSql + " AND MaterialCode ='" + objReq.MaterialCode + "'";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.SpecialFeature))
+                {
+                    strSql = strSql + " AND SpecialFeature LIKE '%" + objReq.SpecialFeature + "%'";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.MaterialDescription))
+                {
+                    strSql = strSql + " AND MaterialDescription ='" + objReq.MaterialDescription + "%'";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.Base))
+                {
+                    strSql = strSql + " AND Base ='" + objReq.Base + "'";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.TypeofDesign))
+                {
+                    strSql = strSql + " AND TypeofDesign ='" + objReq.TypeofDesign + "'";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.FabricCategory))
+                {
+                    strSql = strSql + " AND FabricCategory ='" + objReq.FabricCategory + "'";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.ShadeName)) 
+                {
+                    strSql = strSql + " AND ShadeName ='" + objReq.ShadeName + "'";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.Quality))
+                {
+                    strSql = strSql + " AND Quality ='" + objReq.Quality + "'";
+                }
+                strSql = strSql + " ORDER BY CreatedOn DESC ";
+
+                if (con.State == ConnectionState.Broken)
+                { con.Close(); }
+                if (con.State == ConnectionState.Closed)
+                { con.Open(); }
+
+                SqlDataAdapter da = new SqlDataAdapter(strSql, con);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+
+                int i = 0;
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        var FabricCatalogue = new clsFabric();
+                        FabricCatalogue.MaterialCode = Convert.ToString(ds.Tables[0].Rows[i]["MaterialCode"]);
+                        FabricCatalogue.Quality = Convert.ToString(ds.Tables[0].Rows[i]["Quality"]);
+                        FabricCatalogue.Price = Convert.ToString(ds.Tables[0].Rows[i]["Price"]);
+                        FabricCatalogue.Currency = Convert.ToString(ds.Tables[0].Rows[i]["Currency"]);
+                        FabricCatalogue.BlendDescription = Convert.ToString(ds.Tables[0].Rows[i]["BlendDescription"]);
+                        FabricCatalogue.BlendValue = Convert.ToString(ds.Tables[0].Rows[i]["BlendValue"]);
+                        FabricCatalogue.WeaveType = Convert.ToString(ds.Tables[0].Rows[i]["WeaveType"]);
+                        FabricCatalogue.GSM = Convert.ToInt32(ds.Tables[0].Rows[i]["GSM"]);
+                        FabricCatalogue.StrechType = Convert.ToString(ds.Tables[0].Rows[i]["StrechType"]);
+                        FabricCatalogue.DesignPattern = Convert.ToString(ds.Tables[0].Rows[i]["DesignPattern"]);
+                        FabricCatalogue.Shade = Convert.ToString(ds.Tables[0].Rows[i]["Shade"]);
+                        FabricCatalogue.Usage = Convert.ToString(ds.Tables[0].Rows[i]["Usage"]);
+                        FabricCatalogue.Remarks = Convert.ToString(ds.Tables[0].Rows[i]["Remarks"]);
+                        FabricCatalogue.Product = Convert.ToString(ds.Tables[0].Rows[i]["Product"]);
+                        FabricCatalogue.Address = Convert.ToString(ds.Tables[0].Rows[i]["Address"]);
+                        FabricCatalogue.FinishType = Convert.ToString(ds.Tables[0].Rows[i]["FinishType"]);
+                        FabricCatalogue.FinishFabric = Convert.ToString(ds.Tables[0].Rows[i]["FinishFabric"]);
+                        FabricCatalogue.PieceNo = Convert.ToString(ds.Tables[0].Rows[i]["PieceNo"]);
+                        FabricCatalogue.SpecialFeature = Convert.ToString(ds.Tables[0].Rows[i]["SpecialFeature"]);
+                        FabricCatalogue.MaterialDescription = Convert.ToString(ds.Tables[0].Rows[i]["MaterialDescription"]);
+                        FabricCatalogue.Base = Convert.ToString(ds.Tables[0].Rows[i]["Base"]);
+                        FabricCatalogue.TypeofDesign = Convert.ToString(ds.Tables[0].Rows[i]["TypeofDesign"]);
+                        FabricCatalogue.FabricCategory = Convert.ToString(ds.Tables[0].Rows[i]["FabricCategory"]);
+                        FabricCatalogue.ShadeName = Convert.ToString(ds.Tables[0].Rows[i]["ShadeName"]);
+
+                        FabricCatalogue.vErrorMsg = "Success";
+
+                        _FabricCatalgoue.Add(FabricCatalogue);
+                        i++;
+                    }
+                }
+                else
+                {
+                    var FabricCatalogue = new clsFabric();
+                    FabricCatalogue.vErrorMsg = "No Fabric Record Found.";
+                    _FabricCatalgoue.Add(FabricCatalogue);
+                }
+            }
+            catch (Exception exp)
+            {
+                Logger.WriteLog("Function Name : Fn_Get_Fabric_CatalogueDetail", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                var FabricCatalogue = new clsFabric();
+                FabricCatalogue.vErrorMsg = exp.Message.ToString();
+                _FabricCatalgoue.Add(FabricCatalogue);
+            }
+            finally
+            {
+                con.Close();
+            }
+            return _FabricCatalgoue;
+        }
     }
 }
