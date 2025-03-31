@@ -310,6 +310,7 @@ namespace BSLCustomerPortalAPI.Data_Access_Layer
             }
             return objResp;
         }
+
         public string Fn_SendMail_CustomerContactMessages(clsCustomerContactMessages objResp)
         {
             try
@@ -318,28 +319,27 @@ namespace BSLCustomerPortalAPI.Data_Access_Layer
                 mail.To.Add(ConfigurationManager.AppSettings["Email"]);
                 mail.CC.Add(objResp.Email);
                 mail.Subject = objResp.Name + " " + "trying to Contact You";
-                string Body = "<b>Dear CustomerSupport," + "</b><br><br>" + "This message is send by" + "<br><br>" + "<b>Email : </b>" + objResp.Email + "<br>" + "<b>Mobile No : </b>" + objResp.Mobile + "<br><b> Message : </b>" + objResp.Message + "<br><br> Kindly revert to this query ASAP." + "<br><br><b> Thanks & Regards <br></b>" + objResp.Name + "<br>" + objResp.Mobile;
+                string Body = "<b>Dear Support," + "</b><br><br>" + "This message is send by" + "<br><br>" + "<b>Email : </b>" + objResp.Email + "<br>" + "<b>Mobile No : </b>" + objResp.Mobile + "<br> <b>Message : </b>" + objResp.Message + "<br><br> Kindly revert to this query ASAP." + "<br><br><b> Thanks & Regards <br></b>" + objResp.Name + "<br>" + objResp.Mobile;
                 mail.Body = Body;
                 mail.IsBodyHtml = true;
                 using (SmtpClient smtp = new SmtpClient(ConfigurationManager.AppSettings["Server"], Convert.ToInt32(ConfigurationManager.AppSettings["Port"])))
                 {
                     smtp.UseDefaultCredentials = true;
-                    smtp.Credentials = new System.Net.NetworkCredential(ConfigurationManager.AppSettings["Email"], ConfigurationManager.AppSettings[""]);
+                    smtp.Credentials = new System.Net.NetworkCredential(ConfigurationManager.AppSettings["Email"], ConfigurationManager.AppSettings["EPwd"]);
                     smtp.Host = ConfigurationManager.AppSettings["Server"];
                     smtp.Port = Convert.ToInt32(ConfigurationManager.AppSettings["Port"]);
                     smtp.DeliveryMethod = SmtpDeliveryMethod.Network;
                     smtp.EnableSsl = true;
                     smtp.Send(mail);
-                    objResp.ErrorMsg = "Success";
+                    objResp.ErrorMsg = "success";
                 }
-                //return objResp.ErrorMsg;
+                return objResp.ErrorMsg;
             }
             catch (Exception exp)
             {
-                Logger.WriteLog("Function Name : Fn_SendMail_CustomerContactMessages", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
                 objResp.ErrorMsg = exp.Message.ToString();
+                return objResp.ErrorMsg;
             }
-            return objResp.ErrorMsg;
         }
 
 
