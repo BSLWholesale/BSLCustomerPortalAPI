@@ -27,5 +27,17 @@ namespace BSLCustomerPortalAPI.Controllers
             objResp = _DALCustomer.Fn_LogIn_Customer(objReq);
             return objResp;
         }
+
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/CustomerAPI/Fn_Insert_CustomerContactMessage")]
+        public clsCustomerContactMessages Fn_Insert_CustomerContactMessage(clsCustomerContactMessages objReq)
+        {
+            var objResp = new clsCustomerContactMessages();
+            objResp = _DALCustomer.Fn_Insert_CustomerContactMessage(objReq);
+            return objResp;
+        }
+
+
     }
 }
