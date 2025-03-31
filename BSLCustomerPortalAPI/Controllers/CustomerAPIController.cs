@@ -46,5 +46,13 @@ namespace BSLCustomerPortalAPI.Controllers
             return objResp;
         }
 
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/CustomerAPI/Fn_Delete_Feedback")]
+        public clsFeedback Fn_Delete_Feedback(clsFeedback objReq)
+        {
+            var objResp = new clsFeedback();
+            objResp = _DALCustomer.Fn_Delete_Feedback(objReq);
+            return objResp;
+        }
     }
 }

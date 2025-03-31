@@ -29,6 +29,7 @@ namespace BSLCustomerPortalAPI.Models
         public string Heading { get; set; }
         public string Comments { get; set; }
         public string RequestDate { get; set; }
+        public string QueryType { get; set; }
         public string vStatus { get; set; }
         public string vErrorMsg { get; set; }
     }

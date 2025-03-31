@@ -99,11 +99,12 @@ namespace BSLCustomerPortalAPI.Data_Access_Layer
 
                     SqlCommand cmd = new SqlCommand("USP_CP_Feedback", con);
                     cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@Id", objReq.Id);
                     cmd.Parameters.AddWithValue("@Heading", objReq.Heading);
                     cmd.Parameters.AddWithValue("@Comments", objReq.Comments);
                     cmd.Parameters.AddWithValue("@vStatus", objReq.vStatus);
                     cmd.Parameters.AddWithValue("@UserId", objReq.UserId);
-                    cmd.Parameters.AddWithValue("@QueryType", "Insert");
+                    cmd.Parameters.AddWithValue("@QueryType", objReq.QueryType);
                     int i = 0;
                     i = cmd.ExecuteNonQuery();
                     if(i> 0)
@@ -112,7 +113,7 @@ namespace BSLCustomerPortalAPI.Data_Access_Layer
                     }
                     else
                     {
-                        objResp.vErrorMsg = "Faild to record";
+                        objResp.vErrorMsg = "Faild";
                     }
                 }
             }
@@ -147,8 +148,9 @@ namespace BSLCustomerPortalAPI.Data_Access_Layer
                     SqlCommand cmd = new SqlCommand("USP_CP_Feedback", con);
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@vStatus", objReq.vStatus);
+                    cmd.Parameters.AddWithValue("@Id", objReq.Id);
                     cmd.Parameters.AddWithValue("@UserId", objReq.UserId);
-                    cmd.Parameters.AddWithValue("@QueryType", "Select");
+                    cmd.Parameters.AddWithValue("@QueryType", objReq.QueryType);
                     SqlDataAdapter da = new SqlDataAdapter(cmd);
                     DataSet ds = new DataSet();
                     da.Fill(ds);
@@ -182,6 +184,53 @@ namespace BSLCustomerPortalAPI.Data_Access_Layer
                 Logger.WriteLog("Function Name : Fn_Get_Feedback", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
                 obj.vErrorMsg = exp.Message.ToString();
                 objResp.Add(obj);
+            }
+            finally
+            {
+                con.Close();
+            }
+            return objResp;
+        }
+
+        public clsFeedback Fn_Delete_Feedback(clsFeedback objReq)
+        {
+            var objResp = new clsFeedback();
+            try
+            {
+                if (objReq.Id == 0)
+                {
+                    objResp.vErrorMsg = "Id is not supplied";
+                }
+                else if (objReq.UserId == 0)
+                {
+                    objResp.vErrorMsg = "UserId is not supplied";
+                }
+                else
+                {
+                    if (con.State == ConnectionState.Broken) { con.Open(); }
+                    if (con.State == ConnectionState.Closed) { con.Open(); }
+
+                    SqlCommand cmd = new SqlCommand("USP_CP_Feedback", con);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@Id", objReq.Id);
+                    cmd.Parameters.AddWithValue("@UserId", objReq.UserId);
+                    cmd.Parameters.AddWithValue("@QueryType", "Delete");
+                    int i = 0;
+                    i = cmd.ExecuteNonQuery();
+                    if (i > 0)
+                    {
+                        objResp.vErrorMsg = "Success";
+                    }
+                    else
+                    {
+                        objResp.vErrorMsg = "Deleting faild";
+                    }
+                }
+            }
+            catch (Exception exp)
+            {
+                Logger.WriteLog("Function Name : Fn_Delete_Feedback", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                objResp.vErrorMsg = exp.Message.ToString();
             }
             finally
             {
