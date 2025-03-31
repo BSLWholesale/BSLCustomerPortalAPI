@@ -22,6 +22,18 @@ namespace BSLCustomerPortalAPI.Models
         public string ErrorMsg { get; set; }
     }
 
+    public class clsFeedback
+    {
+        public int Id { get; set; }
+        public int UserId { get; set; }
+        public string Heading { get; set; }
+        public string Comments { get; set; }
+        public string RequestDate { get; set; }
+        public string QueryType { get; set; }
+        public string vStatus { get; set; }
+        public string vErrorMsg { get; set; }
+    }
+
     public class clsCustomerContactMessages
     {
         public Int64 CustId { get; set; }
