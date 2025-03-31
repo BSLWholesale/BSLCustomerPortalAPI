@@ -79,6 +79,115 @@ namespace BSLCustomerPortalAPI.Data_Access_Layer
             return objResp;
         }
 
+        public clsFeedback Fn_Add_Feedback(clsFeedback objReq)
+        {
+            var objResp = new clsFeedback();
+            try
+            {
+                if (String.IsNullOrWhiteSpace(objReq.Heading))
+                {
+                    objResp.vErrorMsg = "Please Enter Heading";
+                }
+                else if (String.IsNullOrWhiteSpace(objReq.Comments))
+                {
+                    objResp.vErrorMsg = "Please Enter Comments";
+                }
+                else
+                {
+                    if(con.State == ConnectionState.Broken) { con.Open(); }
+                    if (con.State == ConnectionState.Closed) { con.Open(); }
 
+                    SqlCommand cmd = new SqlCommand("USP_CP_Feedback", con);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@Heading", objReq.Heading);
+                    cmd.Parameters.AddWithValue("@Comments", objReq.Comments);
+                    cmd.Parameters.AddWithValue("@vStatus", objReq.vStatus);
+                    cmd.Parameters.AddWithValue("@UserId", objReq.UserId);
+                    cmd.Parameters.AddWithValue("@QueryType", "Insert");
+                    int i = 0;
+                    i = cmd.ExecuteNonQuery();
+                    if(i> 0)
+                    {
+                        objResp.vErrorMsg = "Success";
+                    }
+                    else
+                    {
+                        objResp.vErrorMsg = "Faild to record";
+                    }
+                }
+            }
+            catch (Exception exp)
+            {
+                Logger.WriteLog("Function Name : Fn_Add_Feedback", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                objResp.vErrorMsg = exp.Message.ToString();
+            }
+            finally
+            {
+                con.Close();
+            }
+            return objResp;
+        }
+
+        public List<clsFeedback> Fn_Get_Feedback(clsFeedback objReq)
+        {
+            List<clsFeedback> objResp = new List<clsFeedback>();
+            var obj = new clsFeedback();
+            try
+            {
+                if (objReq.UserId == 0)
+                {
+                    obj.vErrorMsg = "Please send UserId";
+                    objResp.Add(obj);
+                }
+                else
+                {
+                    if (con.State == ConnectionState.Broken) { con.Open(); }
+                    if (con.State == ConnectionState.Closed) { con.Open(); }
+
+                    SqlCommand cmd = new SqlCommand("USP_CP_Feedback", con);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@vStatus", objReq.vStatus);
+                    cmd.Parameters.AddWithValue("@UserId", objReq.UserId);
+                    cmd.Parameters.AddWithValue("@QueryType", "Select");
+                    SqlDataAdapter da = new SqlDataAdapter(cmd);
+                    DataSet ds = new DataSet();
+                    da.Fill(ds);
+                    int i = 0;
+                    if (ds.Tables[0].Rows.Count > 0)
+                    {
+                        while(ds.Tables[0].Rows.Count > i)
+                        {
+                            obj = new clsFeedback();
+                            obj.Id = Convert.ToInt32(ds.Tables[0].Rows[i]["Id"]);
+                            obj.Heading = Convert.ToString(ds.Tables[0].Rows[i]["Heading"]);
+                            obj.Comments = Convert.ToString(ds.Tables[0].Rows[i]["Comments"]);
+                            obj.vStatus = Convert.ToString(ds.Tables[0].Rows[i]["vStatus"]);
+                            obj.RequestDate = Convert.ToString(ds.Tables[0].Rows[i]["RequestDate"]);
+                            obj.vErrorMsg = "Success";
+                            objResp.Add(obj);
+
+                            i++;
+
+                        }
+                    }
+                    else
+                    {
+                        obj.vErrorMsg = "No Record Found";
+                        objResp.Add(obj);
+                    }
+                }
+            }
+            catch (Exception exp)
+            {
+                Logger.WriteLog("Function Name : Fn_Get_Feedback", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                obj.vErrorMsg = exp.Message.ToString();
+                objResp.Add(obj);
+            }
+            finally
+            {
+                con.Close();
+            }
+            return objResp;
+        }
     }
 }
