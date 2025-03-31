@@ -8,6 +8,12 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Net.Mail;
+using System.Web.Http;
+using System.Web.Mvc;
+using System.Globalization;
+using System.IO;
+using System.Net;
+using System.Text;
 
 namespace BSLCustomerPortalAPI.Data_Access_Layer
 {
@@ -90,23 +96,23 @@ namespace BSLCustomerPortalAPI.Data_Access_Layer
                 {
                     objResp.ErrorMsg = "Please Enter Customer Id";
                 }
-                else if (!String.IsNullOrWhiteSpace(objReq.Name))
+                else if (String.IsNullOrWhiteSpace(objReq.Name))
                 {
                     objResp.ErrorMsg = "Please Enter Your Name.";
                 }
-                else if (!String.IsNullOrWhiteSpace(objReq.Email))
+                else if (String.IsNullOrWhiteSpace(objReq.Email))
                 {
                     objResp.ErrorMsg = "Please Enter Your Email ID";
                 }
-                else if (!String.IsNullOrWhiteSpace(objReq.Mobile))
+                else if (String.IsNullOrWhiteSpace(objReq.Mobile))
                 {
                     objResp.ErrorMsg = "Please Enter Your Mobile Number";
                 }
-                else if (!String.IsNullOrWhiteSpace(objReq.Address))
+                else if (String.IsNullOrWhiteSpace(objReq.Address))
                 {
                     objResp.ErrorMsg = "Please Enter Your Address";
                 }
-                else if (!String.IsNullOrWhiteSpace(objReq.Message))
+                else if (String.IsNullOrWhiteSpace(objReq.Message))
                 {
                     objResp.ErrorMsg = "Please Enter Your Message";
                 }
