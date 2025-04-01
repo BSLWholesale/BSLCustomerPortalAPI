@@ -42,5 +42,27 @@ namespace BSLCustomerPortalAPI.Controllers
             objResp = _DALProduct.Fn_Get_Sample_Request_Detail(objReq);
             return objResp;
         }
+
+        #region Start for SO
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/OrderAPI/Fn_GET_Sales_Order")]
+        public List<clsSalesOrder> Fn_GET_Sales_Order(clsSalesOrder objReq)
+        {
+            List<clsSalesOrder> objResp = new List<clsSalesOrder>();
+            objResp = _DALProduct.Fn_GET_Sales_Order(objReq);
+            return objResp;
+        }
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/OrderAPI/Fn_GET_Sales_OrderDetail")]
+        public List<clsSalesOrder> Fn_GET_Sales_OrderDetail(clsSalesOrder objReq)
+        {
+            List<clsSalesOrder> objResp = new List<clsSalesOrder>();
+            objResp = _DALProduct.Fn_GET_Sales_OrderDetail(objReq);
+            return objResp;
+        }
+
+        #endregion End for SO
     }
 }
