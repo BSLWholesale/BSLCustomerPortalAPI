@@ -158,14 +158,17 @@
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Controllers\CustomerAPIController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\OrderAPIController.cs" />
     <Compile Include="Controllers\ProductAPIController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
     <Compile Include="Data_Access_Layer\DALCustomer.cs" />
+    <Compile Include="Data_Access_Layer\DALOrder.cs" />
     <Compile Include="Data_Access_Layer\DALProduct.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\clsCustomer.cs" />
+    <Compile Include="Models\clsOrder.cs" />
     <Compile Include="Models\clsProduct.cs" />
     <Compile Include="Models\Generic.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -225,6 +228,7 @@
     <Folder Include="App_Data\" />
     <Folder Include="Data\" />
     <Folder Include="Views\CustomerAPI\" />
+    <Folder Include="Views\OrderAPI\" />
     <Folder Include="Views\ProductAPI\" />
   </ItemGroup>
   <ItemGroup>
