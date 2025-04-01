@@ -133,7 +133,8 @@ namespace BSLCustomerPortalAPI.Data_Access_Layer
                 SqlCommand cmd = new SqlCommand("USP_SampleRequest", con);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@UID", objReq.UserId);
-                cmd.Parameters.AddWithValue("@QueryType", "SelectMaster");
+                cmd.Parameters.AddWithValue("@vStatus", objReq.vStatus);
+                cmd.Parameters.AddWithValue("@QueryType", "SelectByStatus");
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataSet ds = new DataSet();
                 da.Fill(ds);
@@ -288,5 +289,189 @@ namespace BSLCustomerPortalAPI.Data_Access_Layer
             }
             return NewRequestId;
         }
+
+        #region Start for SO
+
+        public List<clsSalesOrder> Fn_GET_Sales_Order(clsSalesOrder objReq)
+        {
+            List<clsSalesOrder> objResp = new List<clsSalesOrder>();
+            var obj = new clsSalesOrder();
+            try
+            {
+                if (con.State == ConnectionState.Broken)
+                {
+                    con.Close();
+                }
+                if (con.State == ConnectionState.Closed)
+                {
+                    con.Open();
+                }
+
+                string strSql = "SELECT DISTINCT TOP 30 SO.SO, FORMAT(SO.Inv_Date,'dd-MMM-yyyy') AS Inv_Date,";
+                strSql = strSql + " SO.DIVISON_NAME, SO.SALES_PERSON, SO.SALES_PERSON_NAME, ";
+                strSql = strSql + " SO.SOLD_PTY, SO.SOLD_TO_PARTY_NAME, SO.BILL_PTY, SO.BILL_TO_PARTY_NAME, ";
+                strSql = strSql + " SO.COUNTRY, SO.Commission, SO.SLOFFICE,";
+                strSql = strSql + "SO.SALES_GROUP_DESC, SO.AGENT_NAME, SCM.City, SCM.Mobile FROM SAP_SO SO INNER JOIN SAP_Cust_Mast SCM ";
+                strSql = strSql + " ON SCM.CustId = SO.SOLD_PTY WHERE 1 = 1 AND SOLD_PTY = @SOLD_PTY";
+
+                if (!String.IsNullOrWhiteSpace(objReq.SO))
+                {
+                    strSql = strSql + " AND SO = @SO";
+                }
+
+                SqlCommand cmd = new SqlCommand(strSql, con);
+                cmd.CommandType = CommandType.Text;
+                cmd.Parameters.AddWithValue("SOLD_PTY", objReq.CSAPId);
+                if (!String.IsNullOrWhiteSpace(objReq.SO))
+                {
+                    cmd.Parameters.AddWithValue("@SO", objReq.SO);
+                }
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+                int i = 0;
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        obj = new clsSalesOrder();
+                        obj.SO = Convert.ToString(ds.Tables[0].Rows[i]["SO"]);
+                        obj.Inv_Date = Convert.ToString(ds.Tables[0].Rows[i]["Inv_Date"]);
+                        obj.DIVISON_NAME = Convert.ToString(ds.Tables[0].Rows[i]["DIVISON_NAME"]);
+                        obj.SALES_PERSON = Convert.ToString(ds.Tables[0].Rows[i]["SALES_PERSON"]);
+                        obj.SALES_PERSON_NAME = Convert.ToString(ds.Tables[0].Rows[i]["SALES_PERSON_NAME"]);
+                        obj.SOLD_PTY = Convert.ToString(ds.Tables[0].Rows[i]["SOLD_PTY"]);
+                        obj.SOLD_TO_PARTY_NAME = Convert.ToString(ds.Tables[0].Rows[i]["SOLD_TO_PARTY_NAME"]);
+                        obj.BILL_PTY = Convert.ToString(ds.Tables[0].Rows[i]["BILL_PTY"]);
+                        obj.BILL_TO_PARTY_NAME = Convert.ToString(ds.Tables[0].Rows[i]["BILL_TO_PARTY_NAME"]);
+                        obj.CITY = Convert.ToString(ds.Tables[0].Rows[i]["CITY"]);
+                        obj.COUNTRY = Convert.ToString(ds.Tables[0].Rows[i]["COUNTRY"]);
+
+                        obj.COMMISSION = Convert.ToString(ds.Tables[0].Rows[i]["Commission"]);
+                        obj.SLOFFICE = Convert.ToString(ds.Tables[0].Rows[i]["SLOFFICE"]);
+                        obj.SALES_GROUP_DESC = Convert.ToString(ds.Tables[0].Rows[i]["SALES_GROUP_DESC"]);
+                        obj.AGENT_NAME = Convert.ToString(ds.Tables[0].Rows[i]["AGENT_NAME"]);
+                        obj.Mobile = Convert.ToString(ds.Tables[0].Rows[i]["Mobile"]);
+
+                        obj.vERRORMSG = "Success";
+
+                        objResp.Add(obj);
+                        i++;
+                    }
+                }
+                else
+                {
+                    obj = new clsSalesOrder();
+                    obj.vERRORMSG = "No Record Found.";
+                    objResp.Add(obj);
+                }
+            }
+            catch (Exception exp)
+            {
+                Logger.WriteLog("Function Name : Fn_GET_Sales_Order", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                obj = new clsSalesOrder();
+                obj.vERRORMSG = exp.Message.ToString();
+                objResp.Add(obj);
+            }
+            finally
+            {
+                con.Close();
+            }
+            return objResp;
+        }
+
+        public List<clsSalesOrder> Fn_GET_Sales_OrderDetail(clsSalesOrder objReq)
+        {
+            List<clsSalesOrder> objResp = new List<clsSalesOrder>();
+            var obj = new clsSalesOrder();
+            try
+            {
+                if (con.State == ConnectionState.Broken)
+                {
+                    con.Close();
+                }
+                if (con.State == ConnectionState.Closed)
+                {
+                    con.Open();
+                }
+
+                string strSql = "SELECT DISTINCT Inv_Type, Invoice_No, FORMAT(Inv_Date,'dd-MMM-yyyy') AS Inv_Date, BSL_Inv_Ref_No,";
+                strSql = strSql + " Inv_Date,Material, Material_Description, Qty, QtyMtr, UOM, Curr, BASIC_RATE,";
+                strSql = strSql + " BASIC_VAL, BASIC_VAL_FC, TAXABLE_AMT_FC, TAXABLE_AMT, INV_VAL_FC, INV_VAL, Commission,";
+                strSql = strSql + " Comm_Amt_INR FROM SAP_SO WHERE 1=1 AND SOLD_PTY = @SOLD_PTY";
+                if (!String.IsNullOrWhiteSpace(objReq.SO))
+                {
+                    strSql = strSql + " AND SO = @SO";
+                }
+
+                SqlCommand cmd = new SqlCommand(strSql, con);
+                cmd.CommandType = CommandType.Text;
+                cmd.Parameters.AddWithValue("SOLD_PTY", objReq.CSAPId);
+                if (!String.IsNullOrWhiteSpace(objReq.SO))
+                {
+                    cmd.Parameters.AddWithValue("@SO", objReq.SO);
+                }
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+                int i = 0;
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        obj = new clsSalesOrder();
+                        obj.Inv_Type = Convert.ToString(ds.Tables[0].Rows[i]["Inv_Type"]);
+                        obj.Invoice_No = Convert.ToString(ds.Tables[0].Rows[i]["Invoice_No"]);
+                        obj.Inv_Date = Convert.ToString(ds.Tables[0].Rows[i]["Inv_Date"]);
+                        obj.BSL_Inv_Ref_No = Convert.ToString(ds.Tables[0].Rows[i]["BSL_Inv_Ref_No"]);
+                        obj.Inv_Date = Convert.ToString(ds.Tables[0].Rows[i]["Inv_Date"]);
+
+                        obj.Material = Convert.ToString(ds.Tables[0].Rows[i]["Material"]);
+                        obj.Material_Description = Convert.ToString(ds.Tables[0].Rows[i]["Material_Description"]);
+                        obj.QTY = Convert.ToString(ds.Tables[0].Rows[i]["Qty"]);
+                        obj.QTYMTR = Convert.ToString(ds.Tables[0].Rows[i]["QtyMtr"]);
+                        obj.UOM = Convert.ToString(ds.Tables[0].Rows[i]["UOM"]);
+                        obj.CURRENCY = Convert.ToString(ds.Tables[0].Rows[i]["Curr"]);
+
+                        obj.BASIC_RATE = Convert.ToString(ds.Tables[0].Rows[i]["BASIC_RATE"]);
+                        obj.BASIC_VAL = Convert.ToString(ds.Tables[0].Rows[i]["BASIC_VAL"]);
+                        obj.BASIC_VAL_FC = Convert.ToString(ds.Tables[0].Rows[i]["BASIC_VAL_FC"]);
+                        obj.TAXABLE_AMT_FC = Convert.ToString(ds.Tables[0].Rows[i]["TAXABLE_AMT_FC"]);
+                        obj.TAXABLE_AMT = Convert.ToString(ds.Tables[0].Rows[i]["TAXABLE_AMT"]);
+
+
+                        obj.INV_VAL_FC = Convert.ToString(ds.Tables[0].Rows[i]["INV_VAL_FC"]);
+                        obj.INV_VAL = Convert.ToString(ds.Tables[0].Rows[i]["INV_VAL"]);
+                        obj.COMMISSION = Convert.ToString(ds.Tables[0].Rows[i]["Commission"]);
+                        obj.COMMISSION_Amt_INR = Convert.ToString(ds.Tables[0].Rows[i]["Comm_Amt_INR"]);
+
+                        obj.vERRORMSG = "Success";
+
+                        objResp.Add(obj);
+                        i++;
+                    }
+                }
+                else
+                {
+                    obj = new clsSalesOrder();
+                    obj.vERRORMSG = "No Record Found.";
+                    objResp.Add(obj);
+                }
+            }
+            catch (Exception exp)
+            {
+                Logger.WriteLog("Function Name : Fn_GET_Sales_OrderDetail", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                obj = new clsSalesOrder();
+                obj.vERRORMSG = exp.Message.ToString();
+                objResp.Add(obj);
+            }
+            finally
+            {
+                con.Close();
+            }
+            return objResp;
+        }
+
+        #endregion for SO
     }
 }
