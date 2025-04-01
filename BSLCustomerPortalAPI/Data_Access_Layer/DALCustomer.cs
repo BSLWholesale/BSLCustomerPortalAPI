@@ -343,6 +343,7 @@ namespace BSLCustomerPortalAPI.Data_Access_Layer
             }
             catch (Exception exp)
             {
+                Logger.WriteLog("Function Name : Fn_SendMail_CustomerContactMessages", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
                 objResp.ErrorMsg = exp.Message.ToString();
                 return objResp.ErrorMsg;
             }
