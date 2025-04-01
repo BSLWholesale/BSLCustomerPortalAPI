@@ -68,6 +68,7 @@ namespace BSLCustomerPortalAPI.Models
         public string MaterialCode { get; set; }
         public string MaterialDescription { get; set; }
         public string Category { get; set; }
+        public string Categoy { get; set; }
         public string Products { get; set; }
         public string Ranges { get; set; }
         public string Fabricblends { get; set; }

@@ -283,7 +283,7 @@ namespace BSLCustomerPortalAPI.Data_Access_Layer
                 }
                 else
                 {
-                    strSql = "SELECT TOP 500 * FROM YARNMaster WHERE 1=1";
+                    strSql = "SELECT TOP 100 * FROM YARNMaster WHERE 1=1";
                 }
 
                 if (!String.IsNullOrWhiteSpace(objReq.GDType))
@@ -667,9 +667,9 @@ namespace BSLCustomerPortalAPI.Data_Access_Layer
                     strSql = "SELECT TOP 100 * FROM RMGMaster WHERE 1=1";
                 }
 
-                if (!String.IsNullOrWhiteSpace(objReq.Category))
+                if (!String.IsNullOrWhiteSpace(objReq.Categoy))
                 {
-                    strSql = strSql + " AND Categoy='" + objReq.Category + "'";
+                    strSql = strSql + " AND Categoy='" + objReq.Categoy + "'";
                 }
                 if (!String.IsNullOrWhiteSpace(objReq.Products))
                 {
