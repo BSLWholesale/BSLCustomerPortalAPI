@@ -15,7 +15,7 @@ namespace BSLCustomerPortalAPI.Models
         public string CustCity { get; set; }
         public string CustPostalCode { get; set; }
         public string CustMobile { get; set; }
-        public string CreateDate { get; set; }
+        public string CustCreatedDate { get; set; }
         public string CustPanNo { get; set; }
         public string CustName { get; set; }
         public string CustPassword { get; set; }

@@ -50,6 +50,7 @@ namespace BSLCustomerPortalAPI.Data_Access_Layer
                     cmd = new SqlCommand("USP_SAP_CustomerLogin", con);
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@CustId", objReq.CustomerId);
+                    cmd.Parameters.AddWithValue("@CustEmailId", objReq.CustomerId);
                     cmd.Parameters.AddWithValue("@CustPassword", encryptPassword);
                     dr = cmd.ExecuteReader();
 
@@ -62,6 +63,8 @@ namespace BSLCustomerPortalAPI.Data_Access_Layer
                         objResp.CustCompanyName = Convert.ToString(dr["CompanyName"]);
                         objResp.CustMobile = Convert.ToString(dr["Mobile"]);
                         objResp.CustName = Convert.ToString(dr["CustName"]);
+                        objResp.CustADRNR = Convert.ToString(dr["ADRNR"]);
+                        objResp.CustCreatedDate = Convert.ToString(dr["CreateDate"]);
                         objResp.CustPassword = decryptPassword;
 
                         objResp.ErrorMsg = "Success";
