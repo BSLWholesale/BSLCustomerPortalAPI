@@ -9,11 +9,16 @@ using System.Net;
 using System.Net.Mail;
 using System.Security.Cryptography;
 using System.Text;
+using System.Data;
+using System.Data.SqlClient;
 
 namespace BSLCustomerPortalAPI.Models
 {
     public class Generic
     {
+        SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["BSL"].ConnectionString);
+        string New_MAXId = string.Empty;
+
         private const string SecurityKey = "ComplexKeyHere_12121";
         public static string EncryptText(string PlainText)
         {
@@ -86,6 +91,57 @@ namespace BSLCustomerPortalAPI.Models
                 return false;
             }
         }
+
+        public string Fn_Get_MAX_ID(string strTableName)
+        {
+            try
+            {
+                string prefix = string.Empty;
+
+                if (con.State == ConnectionState.Broken)
+                { con.Close(); }
+                if (con.State == ConnectionState.Closed)
+                { con.Open(); }
+
+                string strSql;
+                if (strTableName == "QuotationMaster")
+                {
+                    prefix = "QOT-";
+                    strSql = "Select Concat(format(getdate(),'ddMMyyyy'), FORMAT(ISNULL(max(cast(substring(QuotationId,13,6) as int))+1,1),'000000')) from QuotationMaster where Convert(date, CreatedDate) = Convert(date, getdate())";
+                }
+                else
+                {
+                    strSql = "";
+                }
+
+                SqlCommand cmd = new SqlCommand(strSql, con);
+                SqlDataReader dr = cmd.ExecuteReader();
+                if (dr.HasRows)
+                {
+                    dr.Read();
+                    New_MAXId = prefix + dr[0].ToString();
+                }
+                else
+                {
+                    string dt = DateTime.Now.ToString("ddMMyyyy");
+                    New_MAXId = prefix + dt + "000001";
+                }
+                dr.Close();
+                cmd.Dispose();
+                con.Close();
+            }
+            catch (Exception exp)
+            {
+                Logger.WriteLog("Function Name : Fn_Get_MAX_ID", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+            }
+            finally
+            {
+                con.Close();
+            }
+            return New_MAXId;
+        }
+
+
     }
 
 

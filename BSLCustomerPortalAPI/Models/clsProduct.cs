@@ -88,4 +88,70 @@ namespace BSLCustomerPortalAPI.Models
         public string vTBLName { get; set; }
         public string vErrorMsg { get; set; }
     }
+
+
+    public class clsQuotation
+    {
+        public string QuotationId { get; set; }
+        public int UserId { get; set; }
+        public string CustomerName { get; set; }
+        public string CompanyName { get; set; }
+        public string ContactPerson { get; set; }
+        public string EmailId { get; set; }
+        public string CreatedDate { get; set; }
+        public List<clsQuotationList> _oList { get; set; }
+        public string vErrorMsg { get; set; }
+        public string vRemarks { get; set; }
+        public string QueryType { get; set; }
+        public string vUserEmail { get; set; }
+        public string vValidity { get; set; }
+    }
+
+    public class clsQuotationList
+    {
+        public Int64 Id { get; set; }
+        public string QuotationId { get; set; }
+        public string vArticle { get; set; }
+        public string vBlend { get; set; }
+        public string vWeight { get; set; }
+        public string vWidth { get; set; }
+        public string vPrice { get; set; }
+        public string vUnit { get; set; }
+        public string vUnitType { get; set; }
+        public string vPaymentTerms { get; set; }
+        public string vDeliveryTerms { get; set; }
+        public string CreatedDate { get; set; }
+        public string vErrorMsg { get; set; }
+    }
+
+    public class clsQuotationReport
+    {
+        public string QuotationId { get; set; }
+        public int UserId { get; set; }
+        public string UserName { get; set; }
+        public string CustomerName { get; set; }
+        public string CompanyName { get; set; }
+        public string ContactPerson { get; set; }
+        public string EmailId { get; set; }
+        public string CreatedDate { get; set; }
+        public string vRemarks { get; set; }
+        public string vUserEmail { get; set; }
+        public string vValidity { get; set; }
+
+
+        public Int64 Id { get; set; }
+        public string vArticle { get; set; }
+        public string vBlend { get; set; }
+        public string vWeight { get; set; }
+        public string vWidth { get; set; }
+        public string vPrice { get; set; }
+        public string vUnit { get; set; }
+        public string vUnitType { get; set; }
+        public string vPaymentTerms { get; set; }
+        public string vDeliveryTerms { get; set; }
+        public string DetailDate { get; set; }
+        public string vErrorMsg { get; set; }
+    }
+
+
 }
