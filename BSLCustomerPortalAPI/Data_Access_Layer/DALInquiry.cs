@@ -97,7 +97,7 @@ namespace BSLCustomerPortalAPI.Data_Access_Layer
                             }
                             else
                             {
-                                objResp.vErrorMsg = "Faild";
+                                objResp.vErrorMsg = "Failed";
                             }
                         }
 
@@ -129,55 +129,151 @@ namespace BSLCustomerPortalAPI.Data_Access_Layer
             return objResp;
         }
 
-        public string Fn_Get_MAX_ID(string strTableName)
+        public List<clsQuotation> Fn_Get_Quotation(clsQuotation objReq)
         {
+            List<clsQuotation> objResp = new List<clsQuotation>();
+            var obj = new clsQuotation();
             try
             {
-                string prefix = string.Empty;
-
-                if (con.State == ConnectionState.Broken)
-                { con.Close(); }
-                if (con.State == ConnectionState.Closed)
-                { con.Open(); }
-
-
-                string strSql;
-                if (strTableName == "QuotationMaster")
+                string strSql = "SELECT  QM.QuotationId, QM.CustomerName, QM.ContactPerson, QM.EmailId, QM.UID, QM.CompanyName,";
+                strSql = strSql + " Format(QM.CreatedDate, 'dd-MMM-yyyy') AS CreatedDate, QM.UserEmail, QM.Validity,";
+                strSql = strSql + "(CR.CFirstName + ' ' + CR.CLastName) AS USERNAME, QM.Remarks FROM QuotationMaster QM";
+                strSql = strSql + " INNER JOIN CustRegistration CR ON QM.UID = CR.CustId  WHERE 1=1 AND QM.UID = @UID";
+                if (!String.IsNullOrWhiteSpace(objReq.QuotationId))
                 {
-                    prefix = "QOT-";
-                    strSql = "Select Concat(format(getdate(),'ddMMyyyy'), FORMAT(ISNULL(max(cast(substring(QuotationId,13,6) as int))+1,1),'000000')) from QuotationMaster where Convert(date, CreatedDate) = Convert(date, getdate())";
+                    strSql = strSql + " AND QM.QuotationId = @QuotationId";
                 }
-                else
+                if (!String.IsNullOrWhiteSpace(objReq.CustomerName))
                 {
-                    strSql = "";
+                    strSql = strSql + " AND QM.CustomerName = @CustomerName";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.CreatedDate))
+                {
+                    strSql = strSql + " AND Format(QM.CreatedDate, 'dd-MMM-yyyy') = @CreatedDate";
                 }
 
                 SqlCommand cmd = new SqlCommand(strSql, con);
-                SqlDataReader dr = cmd.ExecuteReader();
-                if (dr.HasRows)
+                cmd.CommandType = CommandType.Text;
+                cmd.Parameters.AddWithValue("@UID", objReq.UserId);
+
+                if (!String.IsNullOrWhiteSpace(objReq.QuotationId))
                 {
-                    dr.Read();
-                    New_MAXId = prefix + dr[0].ToString();
+                    cmd.Parameters.AddWithValue("@QuotationId", objReq.QuotationId);
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.CustomerName))
+                {
+                    cmd.Parameters.AddWithValue("@CustomerName", objReq.CustomerName);
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.CreatedDate))
+                {
+                    cmd.Parameters.AddWithValue("@CreatedDate", objReq.CreatedDate);
+                }
+
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+                int i = 0;
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        obj = new clsQuotation();
+
+                        obj.QuotationId = Convert.ToString(ds.Tables[0].Rows[i]["QuotationId"]);
+                        obj.CreatedDate = Convert.ToString(ds.Tables[0].Rows[i]["CreatedDate"]);
+                        obj.UserId = Convert.ToInt32(ds.Tables[0].Rows[i]["UID"]);
+                        obj.CustomerName = Convert.ToString(ds.Tables[0].Rows[i]["CustomerName"]);
+                        obj.CompanyName = Convert.ToString(ds.Tables[0].Rows[i]["CompanyName"]);
+                        obj.ContactPerson = Convert.ToString(ds.Tables[0].Rows[i]["ContactPerson"]);
+                        obj.EmailId = Convert.ToString(ds.Tables[0].Rows[i]["EmailId"]);
+                        obj.vRemarks = Convert.ToString(ds.Tables[0].Rows[i]["Remarks"]);
+
+                        obj.vUserEmail = Convert.ToString(ds.Tables[0].Rows[i]["UserEmail"]);
+                        obj.vValidity = Convert.ToString(ds.Tables[0].Rows[i]["Validity"]);
+
+                        obj.vErrorMsg = "Success";
+                        objResp.Add(obj);
+                        i++;
+                    }
                 }
                 else
                 {
-                    string dt = DateTime.Now.ToString("ddMMyyyy");
-                    New_MAXId = prefix + dt + "000001";
+                    obj.vErrorMsg = "No Data";
+                    objResp.Add(obj);
                 }
-                dr.Close();
-                cmd.Dispose();
-                con.Close();
             }
             catch (Exception exp)
             {
-                Logger.WriteLog("Function Name : Fn_Get_MAX_ID", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                Logger.WriteLog("Function Name : Fn_Get_Quotation", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                obj.vErrorMsg = exp.Message.ToString();
+                objResp.Add(obj);
             }
             finally
             {
                 con.Close();
             }
-            return New_MAXId;
+            return objResp;
         }
+
+        public List<clsQuotationList> Fn_Get_Quotation_Detail(clsQuotationList objReq)
+        {
+            List<clsQuotationList> objResp = new List<clsQuotationList>();
+            var obj = new clsQuotationList();
+            try
+            {
+                SqlCommand cmd = new SqlCommand("USP_Quotation", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@QuotationId", objReq.QuotationId);
+                cmd.Parameters.AddWithValue("@QueryType", "SelectDetail");
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+                int i = 0;
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        obj = new clsQuotationList();
+
+                        obj.Id = Convert.ToInt64(ds.Tables[0].Rows[i]["Id"]);
+                        obj.QuotationId = Convert.ToString(ds.Tables[0].Rows[i]["QuotationId"]);
+                        obj.CreatedDate = Convert.ToString(ds.Tables[0].Rows[i]["CreatedDate"]);
+                        obj.vArticle = Convert.ToString(ds.Tables[0].Rows[i]["vArticle"]);
+
+                        obj.vBlend = Convert.ToString(ds.Tables[0].Rows[i]["vBlend"]);
+                        obj.vWeight = Convert.ToString(ds.Tables[0].Rows[i]["vWeight"]);
+
+                        obj.vWidth = Convert.ToString(ds.Tables[0].Rows[i]["vWidth"]);
+                        obj.vPrice = Convert.ToString(ds.Tables[0].Rows[i]["vPrice"]);
+                        obj.vUnit = Convert.ToString(ds.Tables[0].Rows[i]["vUnit"]);
+                        obj.vUnitType = Convert.ToString(ds.Tables[0].Rows[i]["vUnitType"]);
+                        obj.vPaymentTerms = Convert.ToString(ds.Tables[0].Rows[i]["vPaymentTerms"]);
+                        obj.vDeliveryTerms = Convert.ToString(ds.Tables[0].Rows[i]["vDeliveryTerms"]);
+
+                        obj.vErrorMsg = "Success";
+                        objResp.Add(obj);
+                        i++;
+                    }
+                }
+                else
+                {
+                    obj.vErrorMsg = "No Data";
+                    objResp.Add(obj);
+                }
+            }
+            catch (Exception exp)
+            {
+                Logger.WriteLog("Function Name : Fn_Get_Quotation_Detail", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                obj.vErrorMsg = exp.Message.ToString();
+                objResp.Add(obj);
+            }
+            finally
+            {
+                con.Close();
+            }
+            return objResp;
+        }
+
 
     }
 }

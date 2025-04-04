@@ -12,10 +12,8 @@ namespace BSLCustomerPortalAPI.Controllers
     public class InquiryController : Controller
     {
         // GET: Inquiry
-        public ActionResult Index()
-        {
-            return View();
-        }
+
+        DALInquiry _DALInquiry = new DALInquiry();
 
         [System.Web.Http.HttpPost]
         [System.Web.Http.Route("api/InquiryApi/Fn_Make_Quotation")]
