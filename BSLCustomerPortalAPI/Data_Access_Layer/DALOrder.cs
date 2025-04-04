@@ -477,13 +477,25 @@ namespace BSLCustomerPortalAPI.Data_Access_Layer
         public clsReorder Fn_Create_Reorder(List<clsReorder> objRequest)
         {
             var objResp = new clsReorder();
-            Fn_Get_Max_ReorderId();
+            if (objRequest[0].QueryType == "Insert")
+            {
+                Fn_Get_Max_ReorderId();
+            }
+            else
+            {
+                NewRequestId = objRequest[0].RID;
+                var obj = new clsReorder();
+                obj.RID = objRequest[0].RID;
+                obj.UserId = objRequest[0].UserId;
+                Fn_Delete_Reorder(obj);
+            }
+            
             try
             {
 
-                if (NewRequestId == 0)
+               if(objRequest == null)
                 {
-                    objResp.vErrorMsg = "SampleId not supplied";
+                    objResp.vErrorMsg = "Request list is empty.";
                 }
                 else
                 {
@@ -492,11 +504,12 @@ namespace BSLCustomerPortalAPI.Data_Access_Layer
 
                     foreach (var oList in objRequest)
                     {
-
+                        
                         SqlCommand cmd = new SqlCommand("USP_CP_REORDER", con);
                         cmd.CommandType = CommandType.StoredProcedure;
                         cmd.Parameters.AddWithValue("@SO", oList.SO);
-                        cmd.Parameters.AddWithValue("@RID", NewRequestId);
+                        cmd.Parameters.AddWithValue("@Id", oList.Id);
+                       
                         cmd.Parameters.AddWithValue("@Material", oList.Material);
                         cmd.Parameters.AddWithValue("@Descriptions", oList.Descriptions);
                         cmd.Parameters.AddWithValue("@Shade", oList.Shade);
@@ -505,7 +518,10 @@ namespace BSLCustomerPortalAPI.Data_Access_Layer
                         cmd.Parameters.AddWithValue("@UOM", oList.UOM);
                         cmd.Parameters.AddWithValue("@UserId", oList.UserId);
                         cmd.Parameters.AddWithValue("@Category", oList.Category);
+                       
+                        cmd.Parameters.AddWithValue("@RID", NewRequestId);
                         cmd.Parameters.AddWithValue("@QueryType", "Insert");
+
                         int i = 0;
                         i = cmd.ExecuteNonQuery();
                         if (i > 0)
@@ -589,8 +605,10 @@ namespace BSLCustomerPortalAPI.Data_Access_Layer
                 }
                 SqlCommand cmd = new SqlCommand("USP_CP_REORDER", con);
                 cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@RID", objReq.RID);
                 cmd.Parameters.AddWithValue("@UserId", objReq.UserId);
-
+                cmd.Parameters.AddWithValue("@vStatus", objReq.vStatus);
+                cmd.Parameters.AddWithValue("@QueryType", "Select");
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataSet ds = new DataSet();
                 da.Fill(ds);
@@ -633,6 +651,51 @@ namespace BSLCustomerPortalAPI.Data_Access_Layer
                 obj = new clsReorder();
                 obj.vErrorMsg = exp.Message.ToString();
                 objResp.Add(obj);
+            }
+            finally
+            {
+                con.Close();
+            }
+            return objResp;
+        }
+
+
+        public clsReorder Fn_Delete_Reorder(clsReorder objReq)
+        {
+            var objResp = new clsReorder();
+            try
+            {
+
+                if (objReq.RID == 0)
+                {
+                    objResp.vErrorMsg = "RID not supplied";
+                }
+                else
+                {
+                    if (con.State == ConnectionState.Broken) { con.Close(); }
+                    if (con.State == ConnectionState.Closed) { con.Open(); }
+
+                    SqlCommand cmd = new SqlCommand("USP_CP_REORDER", con);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@RID", objReq.RID);
+                    cmd.Parameters.AddWithValue("@UserId", objReq.UserId);
+                    cmd.Parameters.AddWithValue("@QueryType", "Delete");
+
+                    int i = 0;
+                    i = cmd.ExecuteNonQuery();
+                    if (i > 0)
+                    {
+                        objResp.vErrorMsg = "Success";
+                    }
+                    else
+                    {
+                        objResp.vErrorMsg = "Deleting faild";
+                    }
+                }
+            }
+            catch (Exception exp)
+            {
+                Logger.WriteLog("Function Name : Fn_Delete_Reorder", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
             }
             finally
             {
