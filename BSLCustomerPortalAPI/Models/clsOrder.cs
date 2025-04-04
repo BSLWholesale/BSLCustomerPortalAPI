@@ -121,4 +121,22 @@ namespace BSLCustomerPortalAPI.Models
         public string Mobile { get; set; }
     }
 
+    public class clsReorder
+    {
+        public int Id { get; set; }
+        public string SO { get; set; }
+        public Int64 RID { get; set; }
+        public string Material { get; set; }
+        public string Descriptions { get; set; }
+        public string Shade { get; set; }
+        public int Qty { get; set; }
+        public string UOM { get; set; }
+        public string vStatus { get; set; }
+        public string CreatedDate { get; set; }
+        public int UserId { get; set; }
+        public string Category { get; set; }
+        public string vErrorMsg { get; set; }
+
+    }
+
 }

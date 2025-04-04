@@ -64,5 +64,23 @@ namespace BSLCustomerPortalAPI.Controllers
         }
 
         #endregion End for SO
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/OrderAPI/Fn_Create_Reorder")]
+        public clsReorder Fn_Create_Reorder(List<clsReorder> objReq)
+        {
+            var objResp = new clsReorder();
+            objResp = _DALProduct.Fn_Create_Reorder(objReq);
+            return objResp;
+        }
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/OrderAPI/Fn_GET_Reorder")]
+        public List<clsReorder> Fn_GET_Reorder(clsReorder objReq)
+        {
+            List<clsReorder> objResp = new List<clsReorder>();
+            objResp = _DALProduct.Fn_GET_Reorder(objReq);
+            return objResp;
+        }
     }
 }

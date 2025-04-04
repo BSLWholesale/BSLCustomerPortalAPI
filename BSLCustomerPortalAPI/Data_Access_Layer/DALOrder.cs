@@ -473,5 +473,172 @@ namespace BSLCustomerPortalAPI.Data_Access_Layer
         }
 
         #endregion for SO
+
+        public clsReorder Fn_Create_Reorder(List<clsReorder> objRequest)
+        {
+            var objResp = new clsReorder();
+            Fn_Get_Max_ReorderId();
+            try
+            {
+
+                if (NewRequestId == 0)
+                {
+                    objResp.vErrorMsg = "SampleId not supplied";
+                }
+                else
+                {
+                    if(con.State == ConnectionState.Broken) { con.Close(); }
+                    if (con.State == ConnectionState.Closed) { con.Open(); }
+
+                    foreach (var oList in objRequest)
+                    {
+
+                        SqlCommand cmd = new SqlCommand("USP_CP_REORDER", con);
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("@SO", oList.SO);
+                        cmd.Parameters.AddWithValue("@RID", NewRequestId);
+                        cmd.Parameters.AddWithValue("@Material", oList.Material);
+                        cmd.Parameters.AddWithValue("@Descriptions", oList.Descriptions);
+                        cmd.Parameters.AddWithValue("@Shade", oList.Shade);
+                        cmd.Parameters.AddWithValue("@Qty", oList.Qty);
+
+                        cmd.Parameters.AddWithValue("@UOM", oList.UOM);
+                        cmd.Parameters.AddWithValue("@UserId", oList.UserId);
+                        cmd.Parameters.AddWithValue("@Category", oList.Category);
+                        cmd.Parameters.AddWithValue("@QueryType", "Insert");
+                        int i = 0;
+                        i = cmd.ExecuteNonQuery();
+                        if (i > 0)
+                        {
+                            objResp.vErrorMsg = "Success";
+                        }
+                        else
+                        {
+                            objResp.vErrorMsg = "Inserting faild";
+                        }
+                    }
+                }
+            }
+            catch(Exception exp)
+            {
+                Logger.WriteLog("Function Name : Fn_Create_Reorder", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+            }
+            finally
+            {
+                con.Close();
+            }
+            return objResp;
+        }
+
+        public Int64 Fn_Get_Max_ReorderId()
+        {
+
+            try
+            {
+
+                if (con.State == ConnectionState.Broken)
+                { con.Close(); }
+                if (con.State == ConnectionState.Closed)
+                { con.Open(); }
+
+                string strSql = "Select Concat(format(getdate(),'ddMMyyyy'),substring(format(isnull(max(RID)+1,1),'00000000000000'),9,6)) from CP_Reorder where Convert(date,CreatedDate)=Convert(date,getdate())";
+
+                SqlCommand cmd = new SqlCommand(strSql, con);
+                SqlDataReader dr = cmd.ExecuteReader();
+                if (dr.HasRows)
+                {
+                    dr.Read();
+                    NewRequestId = Convert.ToInt64(dr[0].ToString());
+                }
+                else
+                {
+                    string dt = DateTime.Now.ToString("ddMMyyyy");
+                    string Inq = dt + "000001";
+                    NewRequestId = Convert.ToInt64(Inq);
+
+                }
+                dr.Close();
+                cmd.Dispose();
+                con.Close();
+            }
+            catch (Exception exp)
+            {
+                Logger.WriteLog("Function Name : Fn_Get_Max_ReorderId", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                exp.Message.ToString();
+            }
+            finally
+            {
+                con.Close();
+            }
+            return NewRequestId;
+        }
+
+        public List<clsReorder> Fn_GET_Reorder(clsReorder objReq)
+        {
+            List<clsReorder> objResp = new List<clsReorder>();
+            var obj = new clsReorder();
+            try
+            {
+                if (con.State == ConnectionState.Broken)
+                {
+                    con.Close();
+                }
+                if (con.State == ConnectionState.Closed)
+                {
+                    con.Open();
+                }
+                SqlCommand cmd = new SqlCommand("USP_CP_REORDER", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@UserId", objReq.UserId);
+
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+                int i = 0;
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        obj = new clsReorder();
+                        obj.Id = Convert.ToInt32(ds.Tables[0].Rows[i]["Id"]);
+                        obj.SO = Convert.ToString(ds.Tables[0].Rows[i]["SO"]);
+                        obj.RID = Convert.ToInt64(ds.Tables[0].Rows[i]["RID"]);
+                        obj.Material = Convert.ToString(ds.Tables[0].Rows[i]["Material"]);
+                        obj.Descriptions = Convert.ToString(ds.Tables[0].Rows[i]["Descriptions"]);
+
+                        obj.Shade = Convert.ToString(ds.Tables[0].Rows[i]["Shade"]);
+                        obj.Qty = Convert.ToInt32(ds.Tables[0].Rows[i]["Qty"]);
+                        obj.UOM = Convert.ToString(ds.Tables[0].Rows[i]["UOM"]);
+                        obj.vStatus = Convert.ToString(ds.Tables[0].Rows[i]["vStatus"]);
+                        obj.UserId = Convert.ToInt32(ds.Tables[0].Rows[i]["UserId"]);
+                        obj.Category = Convert.ToString(ds.Tables[0].Rows[i]["Category"]);
+
+                        obj.CreatedDate = Convert.ToString(ds.Tables[0].Rows[i]["CreatedDate"]);
+                        obj.vErrorMsg = "Success";
+
+                        objResp.Add(obj);
+                        i++;
+                    }
+                }
+                else
+                {
+                    obj = new clsReorder();
+                    obj.vErrorMsg = "No Record Found.";
+                    objResp.Add(obj);
+                }
+            }
+            catch (Exception exp)
+            {
+                Logger.WriteLog("Function Name : Fn_GET_Sales_OrderDetail", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                obj = new clsReorder();
+                obj.vErrorMsg = exp.Message.ToString();
+                objResp.Add(obj);
+            }
+            finally
+            {
+                con.Close();
+            }
+            return objResp;
+        }
     }
 }
