@@ -61,7 +61,7 @@ namespace BSLCustomerPortalAPI.Data_Access_Layer
                             cm.CommandType = CommandType.StoredProcedure;
                             cm.Parameters.AddWithValue("@SampleId", NewRequestId);
                             cm.Parameters.AddWithValue("@ProductNo", list.vProduct);
-                            cmd.Parameters.AddWithValue("@Remarks", list.vRemark);
+                            cm.Parameters.AddWithValue("@Remarks", list.vRemark);
                             if (objReq.vCategory == "Fabric")
                             {
 
