@@ -46,4 +46,37 @@ namespace BSLCustomerPortalAPI.Models
         public string Message { get; set; }
         public string ErrorMsg { get; set; }
     }
+
+    public class clsPayment
+    {
+        public string CustomerCode { get; set; }
+        public string CustomerName { get; set; }
+        public string DocumentType { get; set; }
+        public string BSLRefNo { get; set; }
+        public string InvNo { get; set; }
+        public string InvDate { get; set; }
+        public double DebitAmtINR { get; set; }
+        public double CreditAmtINR { get; set; }
+        public double BalanceINR { get; set; }
+        public double DebitAmtFC { get; set; }
+        public double CreditAmtFC { get; set; }
+        public string BalanceFC { get; set; }
+        public string DocCurrency { get; set; }
+        public double DueDays { get; set; }
+        public string SalesPersonName { get; set; }
+        public string DivisionDescription { get; set; }
+        public double OverDueDays { get; set; }
+        public string PayTermDesc { get; set; }
+        public string SalesOrder { get; set; }
+        public string DueDate { get; set; }
+        public string FIDocument { get; set; }
+        public string FiscalYear { get; set; }
+        public double InvQty { get; set; }
+        public string LCDate { get; set; }
+        public string LCNo { get; set; }
+        public string CountryName { get; set; }
+        public string QueryType { get; set; }
+        public string vErrorMsg { get; set; }
+
+    }
 }
