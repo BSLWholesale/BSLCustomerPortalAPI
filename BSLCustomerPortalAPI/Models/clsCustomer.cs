@@ -8,6 +8,7 @@ namespace BSLCustomerPortalAPI.Models
     public class clsCustomer
     {
         public Int64 CustomerId { get; set; }
+        public Int64 SAPCustId { get; set; }
         public string CustEmailId { get; set; }
         public string CustCompanyName { get; set; }
         public string CustADRNR { get; set; }
@@ -19,6 +20,7 @@ namespace BSLCustomerPortalAPI.Models
         public string CustPanNo { get; set; }
         public string CustName { get; set; }
         public string CustPassword { get; set; }
+        public string CustUserType { get; set; }
         public string ErrorMsg { get; set; }
     }
 
