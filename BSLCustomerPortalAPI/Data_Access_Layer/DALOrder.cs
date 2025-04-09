@@ -321,10 +321,10 @@ namespace BSLCustomerPortalAPI.Data_Access_Layer
 
                 SqlCommand cmd = new SqlCommand(strSql, con);
                 cmd.CommandType = CommandType.Text;
-                cmd.Parameters.AddWithValue("SOLD_PTY", objReq.CSAPId);
+                cmd.Parameters.AddWithValue("@SOLD_PTY", objReq.CSAPId);
                 if (!String.IsNullOrWhiteSpace(objReq.SO))
                 {
-                    cmd.Parameters.AddWithValue("@SO", objReq.SO);
+                    cmd.Parameters.AddWithValue("@SO", objReq.SO.Trim());
                 }
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataSet ds = new DataSet();

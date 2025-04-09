@@ -25,8 +25,9 @@ namespace BSLCustomerPortalAPI.Data_Access_Layer
 
                 SqlCommand cmd = new SqlCommand("USP_CP_PAYMENT", con);
                 cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@CustomerCode", objReq.CustomerCode);
                 cmd.Parameters.AddWithValue("@QueryType", "Select");
-                SqlDataAdapter da = new SqlDataAdapter();
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataSet ds = new DataSet();
                 da.Fill(ds);
                 int i = 0;
