@@ -118,6 +118,7 @@ namespace BSLCustomerPortalAPI.Models
         public string vERRORMSG { get; set; }
         public int UserId { get; set; }
         public string CSAPId { get; set; }
+        public string CustomerId { get; set; }
         public string Mobile { get; set; }
     }
 

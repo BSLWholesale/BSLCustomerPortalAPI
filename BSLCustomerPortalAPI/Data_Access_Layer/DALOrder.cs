@@ -299,13 +299,9 @@ namespace BSLCustomerPortalAPI.Data_Access_Layer
             try
             {
                 if (con.State == ConnectionState.Broken)
-                {
-                    con.Close();
-                }
+                { con.Close(); }
                 if (con.State == ConnectionState.Closed)
-                {
-                    con.Open();
-                }
+                { con.Open(); }
 
                 string strSql = "SELECT DISTINCT TOP 30 SO.SO, FORMAT(SO.Inv_Date,'dd-MMM-yyyy') AS Inv_Date,";
                 strSql = strSql + " SO.DIVISON_NAME, SO.SALES_PERSON, SO.SALES_PERSON_NAME, ";

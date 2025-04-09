@@ -30,9 +30,9 @@ namespace BSLCustomerPortalAPI.Data_Access_Layer
             var objResp = new clsCustomer();
             try
             {
-                if (objReq.CustomerId == null || Convert.ToInt32(objReq.CustomerId) == 0)
+                if (objReq.CustEmailId == "" || objReq.CustMobile == "")
                 {
-                    objResp.ErrorMsg = "Please Enter Customer Id";
+                    objResp.ErrorMsg = "Please Enter Customer Id Or Email Id";
                 }
                 else if (String.IsNullOrWhiteSpace(objReq.CustPassword))
                 {
@@ -49,22 +49,26 @@ namespace BSLCustomerPortalAPI.Data_Access_Layer
 
                     cmd = new SqlCommand("USP_SAP_CustomerLogin", con);
                     cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@CustId", objReq.CustomerId);
-                    cmd.Parameters.AddWithValue("@CustEmailId", objReq.CustomerId);
+                    //cmd.Parameters.AddWithValue("@CustId", objReq.CustomerId);
+                    cmd.Parameters.AddWithValue("@CustEmailId", objReq.CustEmailId);
+                    cmd.Parameters.AddWithValue("@CustMobileNo", objReq.CustEmailId);
                     cmd.Parameters.AddWithValue("@CustPassword", encryptPassword);
                     dr = cmd.ExecuteReader();
 
                     if (dr.HasRows)
                     {
                         dr.Read();
-                        string decryptPassword = Generic.DecryptText(Convert.ToString(dr["CPassword"]));
                         objResp.CustomerId = Convert.ToInt32(dr["CustId"]);
-                        objResp.CustEmailId = Convert.ToString(dr["EmailId"]);
-                        objResp.CustCompanyName = Convert.ToString(dr["CompanyName"]);
-                        objResp.CustMobile = Convert.ToString(dr["Mobile"]);
-                        objResp.CustName = Convert.ToString(dr["CustName"]);
+                        objResp.SAPCustId = Convert.ToInt32(dr["SAPCustId"]);
+                        objResp.CustEmailId = Convert.ToString(dr["CEmailId"]).Trim();
+                        //objResp.CustEmailId = Convert.ToString(dr["EmailId"]);
+                        objResp.CustCompanyName = Convert.ToString(dr["CompanyName"]).Trim();
+                        objResp.CustMobile = Convert.ToString(dr["CMobileNo"]);
+                        objResp.CustName = Convert.ToString(dr["CustName"]).Trim();
+                        objResp.CustUserType = Convert.ToString(dr["CustUserType"]);
                         objResp.CustADRNR = Convert.ToString(dr["ADRNR"]);
                         objResp.CustCreatedDate = Convert.ToString(dr["CreateDate"]);
+                        string decryptPassword = Generic.DecryptText(Convert.ToString(dr["CPassword"]));
                         objResp.CustPassword = decryptPassword;
 
                         objResp.ErrorMsg = "Success";
