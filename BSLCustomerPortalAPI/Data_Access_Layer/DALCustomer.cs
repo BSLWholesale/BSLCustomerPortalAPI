@@ -179,8 +179,10 @@ namespace BSLCustomerPortalAPI.Data_Access_Layer
                 }
                 else
                 {
-                    if(con.State == ConnectionState.Broken) { con.Open(); }
-                    if (con.State == ConnectionState.Closed) { con.Open(); }
+                    if(con.State == ConnectionState.Broken) 
+                    { con.Close(); }
+                    if (con.State == ConnectionState.Closed) 
+                    { con.Open(); }
 
                     SqlCommand cmd = new SqlCommand("USP_CP_Feedback", con);
                     cmd.CommandType = CommandType.StoredProcedure;
@@ -198,7 +200,7 @@ namespace BSLCustomerPortalAPI.Data_Access_Layer
                     }
                     else
                     {
-                        objResp.vErrorMsg = "Faild";
+                        objResp.vErrorMsg = "Failed";
                     }
                 }
             }
@@ -227,8 +229,10 @@ namespace BSLCustomerPortalAPI.Data_Access_Layer
                 }
                 else
                 {
-                    if (con.State == ConnectionState.Broken) { con.Open(); }
-                    if (con.State == ConnectionState.Closed) { con.Open(); }
+                    if (con.State == ConnectionState.Broken) 
+                    { con.Close(); }
+                    if (con.State == ConnectionState.Closed) 
+                    { con.Open(); }
 
                     SqlCommand cmd = new SqlCommand("USP_CP_Feedback", con);
                     cmd.CommandType = CommandType.StoredProcedure;
@@ -292,8 +296,10 @@ namespace BSLCustomerPortalAPI.Data_Access_Layer
                 }
                 else
                 {
-                    if (con.State == ConnectionState.Broken) { con.Open(); }
-                    if (con.State == ConnectionState.Closed) { con.Open(); }
+                    if (con.State == ConnectionState.Broken) 
+                    { con.Close(); }
+                    if (con.State == ConnectionState.Closed) 
+                    { con.Open(); }
 
                     SqlCommand cmd = new SqlCommand("USP_CP_Feedback", con);
                     cmd.CommandType = CommandType.StoredProcedure;
@@ -308,7 +314,7 @@ namespace BSLCustomerPortalAPI.Data_Access_Layer
                     }
                     else
                     {
-                        objResp.vErrorMsg = "Deleting faild";
+                        objResp.vErrorMsg = "Deleting Failed";
                     }
                 }
             }
