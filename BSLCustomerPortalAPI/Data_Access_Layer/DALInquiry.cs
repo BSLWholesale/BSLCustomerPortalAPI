@@ -274,6 +274,176 @@ namespace BSLCustomerPortalAPI.Data_Access_Layer
             return objResp;
         }
 
+        public List<clsRequestDropdown> Fn_Fill_AutoComplite(clsRequestDropdown objReq)
+        {
+            List<clsRequestDropdown> _productmodel = new List<clsRequestDropdown>();
+            var obj = new clsRequestDropdown();
+            string strSql = "";
+            try
+            {
+
+                if (con.State == ConnectionState.Broken)
+                { con.Close(); }
+                if (con.State == ConnectionState.Closed)
+                { con.Open(); }
+
+
+                strSql = "SELECT Distinct " + objReq.vFieldName + " FROM " + objReq.vTBLName + " WHERE 1=1";
+                if (!String.IsNullOrWhiteSpace(objReq.vValueField))
+                {
+                    strSql = strSql + " AND " + objReq.vFieldName + " LIKE '%" + objReq.vValueField + "%'";
+                }
+
+                SqlDataAdapter da = new SqlDataAdapter(strSql, con);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+
+                int i = 0;
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        obj = new clsRequestDropdown();
+                        obj.vFieldName = Convert.ToString(ds.Tables[0].Rows[i][0]);
+                        obj.vErrorMsg = "Success";
+                        _productmodel.Add(obj);
+                        i++;
+                    }
+                }
+                else
+                {
+                    obj.vErrorMsg = "No Data";
+                    _productmodel.Add(obj);
+                }
+            }
+            catch (Exception exp)
+            {
+                Logger.WriteLog("Function Name : Fn_Fill_AutoComplite", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                obj.vErrorMsg = exp.Message.ToString();
+                _productmodel.Add(obj);
+            }
+            finally
+            {
+                con.Close();
+            }
+            return _productmodel;
+        }
+
+        public List<clsQuotationReport> Fn_Get_Quotation_Report(clsQuotationReport objReq)
+        {
+            List<clsQuotationReport> objResp = new List<clsQuotationReport>();
+            var obj = new clsQuotationReport();
+            try
+            {
+                string strSql = " SELECT  QM.QuotationId, QM.CustomerName, QM.ContactPerson, QM.EmailId, QM.CompanyName,";
+                strSql = strSql + " Format(QM.CreatedDate, 'dd-MMM-yyyy') AS CreatedDate, QM.UserEmail, QM.Validity, QM.UID,";
+                strSql = strSql + " (CR.CFirstName + ' ' + CR.CLastName) AS USERNAME,";
+                strSql = strSql + " QM.Remarks, QD.Id, QD.vArticle,QD.vBlend, QD.vWeight,QD.vWidth,QD.vPrice, QD.vUnit,";
+                strSql = strSql + " QD.vUnitType, QD.vPaymentTerms,QD.vDeliveryTerms";
+                strSql = strSql + " FROM QuotationMaster QM INNER JOIN CustRegistration CR ON QM.UID = CR.CustId";
+                strSql = strSql + " INNER JOIN QuotationDetail QD ON QM.QuotationId = QD.QuotationId WHERE 1=1 AND QM.UID = @UID";
+                if (!String.IsNullOrWhiteSpace(objReq.QuotationId))
+                {
+                    strSql = strSql + " AND QM.QuotationId = @QuotationId";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.CustomerName))
+                {
+                    strSql = strSql + " AND QM.CustomerName = @CustomerName";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.CreatedDate))
+                {
+                    strSql = strSql + " AND Format(QM.CreatedDate, 'dd-MMM-yyyy') = @CreatedDate";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.vArticle))
+                {
+                    strSql = strSql + " AND QD.vArticle = @Article ";
+                }
+                strSql = strSql + " ORDER BY QM.CreatedDate DESC";
+
+                SqlCommand cmd = new SqlCommand(strSql, con);
+                cmd.CommandType = CommandType.Text;
+
+                cmd.Parameters.AddWithValue("@UID", objReq.UserId);
+
+                if (!String.IsNullOrWhiteSpace(objReq.QuotationId))
+                {
+                    cmd.Parameters.AddWithValue("@QuotationId", objReq.QuotationId);
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.CustomerName))
+                {
+                    cmd.Parameters.AddWithValue("@CustomerName", objReq.CustomerName);
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.CreatedDate))
+                {
+                    cmd.Parameters.AddWithValue("@CreatedDate", objReq.CreatedDate);
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.vArticle))
+                {
+                    cmd.Parameters.AddWithValue("@Article", objReq.vArticle);
+                }
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+                int i = 0;
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        obj = new clsQuotationReport();
+
+                        obj.QuotationId = Convert.ToString(ds.Tables[0].Rows[i]["QuotationId"]);
+                        obj.CreatedDate = Convert.ToString(ds.Tables[0].Rows[i]["CreatedDate"]);
+                        obj.UserId = Convert.ToInt32(ds.Tables[0].Rows[i]["UID"]);
+                        obj.CustomerName = Convert.ToString(ds.Tables[0].Rows[i]["CustomerName"]);
+                        obj.CompanyName = Convert.ToString(ds.Tables[0].Rows[i]["CompanyName"]);
+                        obj.ContactPerson = Convert.ToString(ds.Tables[0].Rows[i]["ContactPerson"]);
+                        obj.EmailId = Convert.ToString(ds.Tables[0].Rows[i]["EmailId"]);
+                        obj.vRemarks = Convert.ToString(ds.Tables[0].Rows[i]["Remarks"]);
+
+                        obj.vUserEmail = Convert.ToString(ds.Tables[0].Rows[i]["UserEmail"]);
+                        obj.vValidity = Convert.ToString(ds.Tables[0].Rows[i]["Validity"]);
+
+                        obj.Id = Convert.ToInt64(ds.Tables[0].Rows[i]["Id"]);
+                        obj.QuotationId = Convert.ToString(ds.Tables[0].Rows[i]["QuotationId"]);
+                        obj.CreatedDate = Convert.ToString(ds.Tables[0].Rows[i]["CreatedDate"]);
+                        obj.vArticle = Convert.ToString(ds.Tables[0].Rows[i]["vArticle"]);
+
+                        obj.vBlend = Convert.ToString(ds.Tables[0].Rows[i]["vBlend"]);
+                        obj.vWeight = Convert.ToString(ds.Tables[0].Rows[i]["vWeight"]);
+
+                        obj.vWidth = Convert.ToString(ds.Tables[0].Rows[i]["vWidth"]);
+                        obj.vPrice = Convert.ToString(ds.Tables[0].Rows[i]["vPrice"]);
+                        obj.vUnit = Convert.ToString(ds.Tables[0].Rows[i]["vUnit"]);
+                        obj.vUnitType = Convert.ToString(ds.Tables[0].Rows[i]["vUnitType"]);
+                        obj.vPaymentTerms = Convert.ToString(ds.Tables[0].Rows[i]["vPaymentTerms"]);
+                        obj.vDeliveryTerms = Convert.ToString(ds.Tables[0].Rows[i]["vDeliveryTerms"]);
+
+                        obj.vErrorMsg = "Success";
+                        objResp.Add(obj);
+                        i++;
+                    }
+                }
+                else
+                {
+                    obj.vErrorMsg = "No Data";
+                    objResp.Add(obj);
+                }
+            }
+            catch (Exception exp)
+            {
+                Logger.WriteLog("Function Name : Fn_Get_Quotation_Report", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                obj.vErrorMsg = exp.Message.ToString();
+                objResp.Add(obj);
+            }
+            finally
+            {
+                con.Close();
+            }
+            return objResp;
+        }
+
+
+
 
     }
 }

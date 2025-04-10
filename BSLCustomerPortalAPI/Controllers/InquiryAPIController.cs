@@ -45,5 +45,25 @@ namespace BSLCustomerPortalAPI.Controllers
             objResp = _DALInquiry.Fn_Get_Quotation_Detail(objReq);
             return objResp;
         }
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/InquiryApi/Fn_Fill_AutoComplite")]
+        public List<clsRequestDropdown> Fn_Fill_AutoComplite(clsRequestDropdown objReq)
+        {
+            List<clsRequestDropdown> objResp = new List<clsRequestDropdown>();
+            objResp = _DALInquiry.Fn_Fill_AutoComplite(objReq);
+            return objResp;
+        }
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/InquiryApi/Fn_Get_Quotation_Report")]
+        public List<clsQuotationReport> Fn_Get_Quotation_Report(clsQuotationReport objReq)
+        {
+            List<clsQuotationReport> objResp = new List<clsQuotationReport>();
+            objResp = _DALInquiry.Fn_Get_Quotation_Report(objReq);
+            return objResp;
+        }
+
+
     }
 }
