@@ -9,9 +9,13 @@ using System.Web.Http;
 
 namespace BSLCustomerPortalAPI.Controllers
 {
-    public class InquiryController : Controller
+    public class InquiryAPIController : ApiController
     {
-        // GET: Inquiry
+        // GET: InquiryAPI
+        //public ActionResult Index()
+        //{
+        //    return View();
+        //}
 
         DALInquiry _DALInquiry = new DALInquiry();
 
@@ -41,7 +45,5 @@ namespace BSLCustomerPortalAPI.Controllers
             objResp = _DALInquiry.Fn_Get_Quotation_Detail(objReq);
             return objResp;
         }
-
-
     }
 }
