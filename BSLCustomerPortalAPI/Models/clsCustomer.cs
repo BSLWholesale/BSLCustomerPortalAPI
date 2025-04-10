@@ -60,7 +60,7 @@ namespace BSLCustomerPortalAPI.Models
         public double BalanceINR { get; set; }
         public double DebitAmtFC { get; set; }
         public double CreditAmtFC { get; set; }
-        public string BalanceFC { get; set; }
+        public double BalanceFC { get; set; }
         public string DocCurrency { get; set; }
         public double DueDays { get; set; }
         public string SalesPersonName { get; set; }

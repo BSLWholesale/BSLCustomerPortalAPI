@@ -45,6 +45,11 @@ namespace BSLCustomerPortalAPI.Data_Access_Layer
                         obj.DebitAmtINR = Convert.ToDouble(ds.Tables[0].Rows[i]["DebitAmtINR"]);
                         obj.CreditAmtINR = Convert.ToDouble(ds.Tables[0].Rows[i]["CreditAmtINR"]);
                         obj.BalanceINR = Convert.ToDouble(ds.Tables[0].Rows[i]["BalanceINR"]);
+
+                        obj.DebitAmtFC = Convert.ToDouble(ds.Tables[0].Rows[i]["DebitAmtFC"]);
+                        obj.CreditAmtFC = Convert.ToDouble(ds.Tables[0].Rows[i]["CreditAmtFC"]);
+                        obj.BalanceFC = Convert.ToDouble(ds.Tables[0].Rows[i]["BalanceINR"]);
+
                         obj.DocCurrency = Convert.ToString(ds.Tables[0].Rows[i]["DocCurrency"]);
                         obj.DueDays = Convert.ToDouble(ds.Tables[0].Rows[i]["DueDays"]);
                         obj.SalesPersonName = Convert.ToString(ds.Tables[0].Rows[i]["SalesPersonName"]);
