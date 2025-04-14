@@ -303,17 +303,21 @@ namespace BSLCustomerPortalAPI.Data_Access_Layer
                 if (con.State == ConnectionState.Closed)
                 { con.Open(); }
 
-                string strSql = "SELECT DISTINCT TOP 30 SO.SO, FORMAT(SO.Inv_Date,'dd-MMM-yyyy') AS Inv_Date,";
+                //string strSql = "SELECT DISTINCT TOP 30 SO.SO, FORMAT(SO.Inv_Date,'dd-MMM-yyyy') AS Inv_Date,";
+                string strSql = "SELECT DISTINCT TOP 30 SO.SO, SO.Inv_Date, FORMAT(SO.Inv_Date,'dd-MMM-yyyy') AS Invoice_Date,";
                 strSql = strSql + " SO.DIVISON_NAME, SO.SALES_PERSON, SO.SALES_PERSON_NAME, ";
                 strSql = strSql + " SO.SOLD_PTY, SO.SOLD_TO_PARTY_NAME, SO.BILL_PTY, SO.BILL_TO_PARTY_NAME, ";
                 strSql = strSql + " SO.COUNTRY, SO.Commission, SO.SLOFFICE,";
                 strSql = strSql + "SO.SALES_GROUP_DESC, SO.AGENT_NAME, SCM.City, SCM.Mobile FROM SAP_SO SO INNER JOIN SAP_Cust_Mast SCM ";
-                strSql = strSql + " ON SCM.CustId = SO.SOLD_PTY WHERE 1 = 1 AND SOLD_PTY = @SOLD_PTY";
+                //strSql = strSql + " ON SCM.CustId = SO.SOLD_PTY WHERE 1 = 1 AND SOLD_PTY = @SOLD_PTY";
+                strSql = strSql + " ON CAST(SCM.CustId AS NVARCHAR) = SO.SOLD_PTY WHERE 1 = 1 AND SOLD_PTY = @SOLD_PTY";
 
                 if (!String.IsNullOrWhiteSpace(objReq.SO))
                 {
                     strSql = strSql + " AND SO = @SO";
                 }
+
+                strSql = strSql + " ORDER BY SO.Inv_Date DESC";
 
                 SqlCommand cmd = new SqlCommand(strSql, con);
                 cmd.CommandType = CommandType.Text;
@@ -332,7 +336,8 @@ namespace BSLCustomerPortalAPI.Data_Access_Layer
                     {
                         obj = new clsSalesOrder();
                         obj.SO = Convert.ToString(ds.Tables[0].Rows[i]["SO"]);
-                        obj.Inv_Date = Convert.ToString(ds.Tables[0].Rows[i]["Inv_Date"]);
+                        //obj.Inv_Date = Convert.ToString(ds.Tables[0].Rows[i]["Inv_Date"]);
+                        obj.Inv_Date = Convert.ToString(ds.Tables[0].Rows[i]["Invoice_Date"]);
                         obj.DIVISON_NAME = Convert.ToString(ds.Tables[0].Rows[i]["DIVISON_NAME"]);
                         obj.SALES_PERSON = Convert.ToString(ds.Tables[0].Rows[i]["SALES_PERSON"]);
                         obj.SALES_PERSON_NAME = Convert.ToString(ds.Tables[0].Rows[i]["SALES_PERSON_NAME"]);
