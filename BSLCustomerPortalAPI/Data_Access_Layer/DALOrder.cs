@@ -396,14 +396,18 @@ namespace BSLCustomerPortalAPI.Data_Access_Layer
                     con.Open();
                 }
 
-                string strSql = "SELECT DISTINCT Inv_Type, Invoice_No, FORMAT(Inv_Date,'dd-MMM-yyyy') AS Inv_Date, BSL_Inv_Ref_No,";
+                //string strSql = "SELECT DISTINCT Inv_Type, Invoice_No, FORMAT(Inv_Date,'dd-MMM-yyyy') AS Inv_Date, BSL_Inv_Ref_No,";
+                string strSql = "SELECT DISTINCT Inv_Type, Invoice_No, FORMAT(Inv_Date,'dd-MMM-yyyy') AS InvoiceDate, BSL_Inv_Ref_No,";
                 strSql = strSql + " Inv_Date,Material, Material_Description, Qty, QtyMtr, UOM, Curr, BASIC_RATE,";
                 strSql = strSql + " BASIC_VAL, BASIC_VAL_FC, TAXABLE_AMT_FC, TAXABLE_AMT, INV_VAL_FC, INV_VAL, Commission,";
                 strSql = strSql + " Comm_Amt_INR FROM SAP_SO WHERE 1=1 AND SOLD_PTY = @SOLD_PTY";
+
                 if (!String.IsNullOrWhiteSpace(objReq.SO))
                 {
                     strSql = strSql + " AND SO = @SO";
                 }
+
+                strSql = strSql + " ORDER BY Inv_Date DESC";
 
                 SqlCommand cmd = new SqlCommand(strSql, con);
                 cmd.CommandType = CommandType.Text;
@@ -423,9 +427,10 @@ namespace BSLCustomerPortalAPI.Data_Access_Layer
                         obj = new clsSalesOrder();
                         obj.Inv_Type = Convert.ToString(ds.Tables[0].Rows[i]["Inv_Type"]);
                         obj.Invoice_No = Convert.ToString(ds.Tables[0].Rows[i]["Invoice_No"]);
-                        obj.Inv_Date = Convert.ToString(ds.Tables[0].Rows[i]["Inv_Date"]);
+                        //obj.Inv_Date = Convert.ToString(ds.Tables[0].Rows[i]["Inv_Date"]);
+                        obj.Inv_Date = Convert.ToString(ds.Tables[0].Rows[i]["InvoiceDate"]);
                         obj.BSL_Inv_Ref_No = Convert.ToString(ds.Tables[0].Rows[i]["BSL_Inv_Ref_No"]);
-                        obj.Inv_Date = Convert.ToString(ds.Tables[0].Rows[i]["Inv_Date"]);
+                        //obj.Inv_Date = Convert.ToString(ds.Tables[0].Rows[i]["Inv_Date"]);
 
                         obj.Material = Convert.ToString(ds.Tables[0].Rows[i]["Material"]);
                         obj.Material_Description = Convert.ToString(ds.Tables[0].Rows[i]["Material_Description"]);
