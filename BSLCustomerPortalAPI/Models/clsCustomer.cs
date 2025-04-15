@@ -79,4 +79,16 @@ namespace BSLCustomerPortalAPI.Models
         public string vErrorMsg { get; set; }
 
     }
+
+    public class clsITHelpdesk
+    {
+        public int Id { get; set; }
+        public int UserId { get; set; }
+        public string Heading { get; set; }
+        public string Comments { get; set; }
+        public string RequestDate { get; set; }
+        public string QueryType { get; set; }
+        public string vStatus { get; set; }
+        public string vErrorMsg { get; set; }
+    }
 }

@@ -158,12 +158,14 @@
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Controllers\CustomerAPIController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\HRAPIController.cs" />
     <Compile Include="Controllers\InquiryAPIController.cs" />
     <Compile Include="Controllers\OrderAPIController.cs" />
     <Compile Include="Controllers\PaymentAPIController.cs" />
     <Compile Include="Controllers\ProductAPIController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
     <Compile Include="Data_Access_Layer\DALCustomer.cs" />
+    <Compile Include="Data_Access_Layer\DALHR.cs" />
     <Compile Include="Data_Access_Layer\DALInquiry.cs" />
     <Compile Include="Data_Access_Layer\DALOrder.cs" />
     <Compile Include="Data_Access_Layer\DALPayment.cs" />
@@ -232,6 +234,7 @@
     <Folder Include="App_Data\" />
     <Folder Include="Data\" />
     <Folder Include="Views\CustomerAPI\" />
+    <Folder Include="Views\HRAPI\" />
     <Folder Include="Views\InquiryAPI\" />
     <Folder Include="Views\Inquiry\" />
     <Folder Include="Views\OrderAPI\" />
