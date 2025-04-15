@@ -704,5 +704,73 @@ namespace BSLCustomerPortalAPI.Data_Access_Layer
             }
             return objResp;
         }
+
+        public List<clsSalesOrder> Fn_GET_Delivey(clsSalesOrder objReq)
+        {
+            List<clsSalesOrder> objResp = new List<clsSalesOrder>();
+            var obj = new clsSalesOrder();
+            try
+            {
+                if (con.State == ConnectionState.Broken)
+                {
+                    con.Close();
+                }
+                if (con.State == ConnectionState.Closed)
+                {
+                    con.Open();
+                }
+
+
+                SqlCommand cmd = new SqlCommand("CP_SAP_SO", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@SOLD_PTY", objReq.CSAPId);
+                if (!String.IsNullOrWhiteSpace(objReq.SO))
+                {
+                    cmd.Parameters.AddWithValue("@SO", objReq.SO);
+                }
+                cmd.Parameters.AddWithValue("@QueryType", "SelectDO");
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+                int i = 0;
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        obj = new clsSalesOrder();
+                        obj.DO = Convert.ToString(ds.Tables[0].Rows[i]["DO"]);
+                        obj.SO = Convert.ToString(ds.Tables[0].Rows[i]["SO"]);
+                        obj.SHIP_TO_PARTY_NAME = Convert.ToString(ds.Tables[0].Rows[i]["SHIP_TO_PARTY_NAME"]);
+                        obj.BILL_TO_PARTY_NAME = Convert.ToString(ds.Tables[0].Rows[i]["BILL_TO_PARTY_NAME"]);
+                        obj.CITY = Convert.ToString(ds.Tables[0].Rows[i]["CITY"]);
+                        obj.COUNTRY = Convert.ToString(ds.Tables[0].Rows[i]["COUNTRY"]);
+
+                        obj.vERRORMSG = "Success";
+
+                        objResp.Add(obj);
+                        i++;
+                    }
+                }
+                else
+                {
+                    obj = new clsSalesOrder();
+                    obj.vERRORMSG = "No Record Found.";
+                    objResp.Add(obj);
+                }
+            }
+            catch (Exception exp)
+            {
+                Logger.WriteLog("Function Name : Fn_GET_Delivey", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                obj = new clsSalesOrder();
+                obj.vERRORMSG = exp.Message.ToString();
+                objResp.Add(obj);
+            }
+            finally
+            {
+                con.Close();
+            }
+            return objResp;
+        }
+
     }
 }

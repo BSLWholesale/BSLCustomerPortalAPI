@@ -82,5 +82,14 @@ namespace BSLCustomerPortalAPI.Controllers
             objResp = _DALProduct.Fn_GET_Reorder(objReq);
             return objResp;
         }
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/OrderAPI/Fn_GET_Delivey")]
+        public List<clsSalesOrder> Fn_GET_Delivey(clsSalesOrder objReq)
+        {
+            List<clsSalesOrder> objResp = new List<clsSalesOrder>();
+            objResp = _DALProduct.Fn_GET_Delivey(objReq);
+            return objResp;
+        }
     }
 }
