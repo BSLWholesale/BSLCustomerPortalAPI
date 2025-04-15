@@ -141,4 +141,37 @@ namespace BSLCustomerPortalAPI.Models
 
     }
 
+    public class clsPaymentLedger
+    {
+        public string Customer { get; set; }
+        public string Name1 { get; set; }
+        public string DocumentDate { get; set; }
+        public string PostingDate { get; set; }
+        public string DocumentNumber { get; set; }
+        public string DocumentType { get; set; }
+        public string Reference { get; set; }
+        public string InvoiceReference { get; set; }
+        public string Cleared_Open_ItemsSymbol { get; set; }
+        public string Assignment { get; set; }
+        public string Amount_in_LocalCurrency { get; set; }
+        public string LocalCurrency { get; set; }
+        public string AmountinDocCurr { get; set; }
+        public string DocumentCurrency { get; set; }
+        public string ClearingDocument { get; set; }
+        public string Text { get; set; }
+        public string ProfitCenter { get; set; }
+        public string BillingDocument { get; set; }
+        public string Account { get; set; }
+        public double Days1 { get; set; }
+        public double Days2 { get; set; }
+        public string DueNet { get; set; }
+        public string Name_of_offsettingaccount { get; set; }
+        public string NetDueDate { get; set; }
+        public string Orders { get; set; }
+        public string Paymentreference { get; set; }
+        public string vErrorMsg { get; set; }
+
+
+    }
+
 }

@@ -26,5 +26,13 @@ namespace BSLCustomerPortalAPI.Controllers
             return objResp;
         }
 
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/PaymentAPI/Fn_Get_Claim")]
+        public List<clsPaymentLedger> Fn_Get_Claim(clsPaymentLedger objReq)
+        {
+            List<clsPaymentLedger> objResp = new List<clsPaymentLedger>();
+            objResp = _DALPayment.Fn_Get_Claim(objReq);
+            return objResp;
+        }
     }
 }

@@ -78,7 +78,85 @@ namespace BSLCustomerPortalAPI.Data_Access_Layer
             }
             catch (Exception exp)
             {
-                Logger.WriteLog("Function Name : Fn_Send_Sample_Request", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                Logger.WriteLog("Function Name : Fn_Get_Payment", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                obj.vErrorMsg = exp.Message.ToString();
+                objResp.Add(obj);
+            }
+            finally
+            {
+
+            }
+            return objResp;
+        }
+
+        public List<clsPaymentLedger> Fn_Get_Claim(clsPaymentLedger objReq)
+        {
+            List<clsPaymentLedger> objResp = new List<clsPaymentLedger>();
+            var obj = new clsPaymentLedger();
+            try
+            {
+                if (con.State == ConnectionState.Broken) { con.Close(); }
+                if (con.State == ConnectionState.Closed) { con.Open(); }
+
+                SqlCommand cmd = new SqlCommand("USP_CP_PAYMENT", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@CustomerCode", objReq.Customer);
+                cmd.Parameters.AddWithValue("@DocumentType", objReq.DocumentType);
+                cmd.Parameters.AddWithValue("@QueryType", "SelectClaim");
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+                int i = 0;
+                if (ds.Tables[0].Rows.Count > i)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        obj = new clsPaymentLedger();
+                        obj.Customer = Convert.ToString(ds.Tables[0].Rows[i]["Customer"]);
+                        obj.Name1 = Convert.ToString(ds.Tables[0].Rows[i]["Name1"]);
+                        obj.DocumentDate = Convert.ToString(ds.Tables[0].Rows[i]["DocumentDate"]);
+                        obj.PostingDate = Convert.ToString(ds.Tables[0].Rows[i]["PostingDate"]);
+                        obj.DocumentNumber = Convert.ToString(ds.Tables[0].Rows[i]["DocumentNumber"]);
+                        obj.DocumentType = Convert.ToString(ds.Tables[0].Rows[i]["DocumentType"]);
+                        obj.Reference = Convert.ToString(ds.Tables[0].Rows[i]["Reference"]);
+                        obj.InvoiceReference = Convert.ToString(ds.Tables[0].Rows[i]["InvoiceReference"]);
+
+                        obj.Cleared_Open_ItemsSymbol = Convert.ToString(ds.Tables[0].Rows[i]["Cleared_Open_ItemsSymbol"]);
+                        obj.Assignment = Convert.ToString(ds.Tables[0].Rows[i]["Assignment"]);
+                        obj.Amount_in_LocalCurrency = Convert.ToString(ds.Tables[0].Rows[i]["Amount_in_LocalCurrency"]);
+
+                        obj.LocalCurrency = Convert.ToString(ds.Tables[0].Rows[i]["LocalCurrency"]);
+                        obj.AmountinDocCurr = Convert.ToString(ds.Tables[0].Rows[i]["AmountinDocCurr"]);
+                        obj.DocumentCurrency = Convert.ToString(ds.Tables[0].Rows[i]["DocumentCurrency"]);
+                        obj.ClearingDocument = Convert.ToString(ds.Tables[0].Rows[i]["ClearingDocument"]);
+                        obj.Text = Convert.ToString(ds.Tables[0].Rows[i]["Text"]);
+                        obj.ProfitCenter = Convert.ToString(ds.Tables[0].Rows[i]["ProfitCenter"]);
+                        obj.BillingDocument = Convert.ToString(ds.Tables[0].Rows[i]["BillingDocument"]);
+                        obj.Account = Convert.ToString(ds.Tables[0].Rows[i]["Account"]);
+                        obj.Days1 = Convert.ToDouble(ds.Tables[0].Rows[i]["Days1"]);
+                        obj.Days2 = Convert.ToDouble(ds.Tables[0].Rows[i]["Days2"]);
+
+                        obj.DueNet = Convert.ToString(ds.Tables[0].Rows[i]["DueNet"]);
+                        obj.Name_of_offsettingaccount = Convert.ToString(ds.Tables[0].Rows[i]["Name_of_offsettingaccount"]);
+                        obj.NetDueDate = Convert.ToString(ds.Tables[0].Rows[i]["NetDueDate"]);
+                        obj.Orders = Convert.ToString(ds.Tables[0].Rows[i]["Orders"]);
+
+                        obj.Paymentreference = Convert.ToString(ds.Tables[0].Rows[i]["Paymentreference"]);
+
+                        obj.vErrorMsg = "Success";
+                        objResp.Add(obj);
+                        i++;
+                    }
+                }
+                else
+                {
+                    obj.vErrorMsg = "No Record Found";
+                    objResp.Add(obj);
+                }
+            }
+            catch (Exception exp)
+            {
+                Logger.WriteLog("Function Name : Fn_Get_Claim", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
                 obj.vErrorMsg = exp.Message.ToString();
                 objResp.Add(obj);
             }
