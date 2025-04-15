@@ -49,7 +49,7 @@ namespace BSLCustomerPortalAPI.Data_Access_Layer
 
                     cmd = new SqlCommand("USP_SAP_CustomerLogin", con);
                     cmd.CommandType = CommandType.StoredProcedure;
-                    //cmd.Parameters.AddWithValue("@CustId", objReq.CustomerId);
+                    cmd.Parameters.AddWithValue("@CustomerId", objReq.CustEmailId);
                     cmd.Parameters.AddWithValue("@CustEmailId", objReq.CustEmailId);
                     cmd.Parameters.AddWithValue("@CustMobileNo", objReq.CustEmailId);
                     cmd.Parameters.AddWithValue("@CustPassword", encryptPassword);
