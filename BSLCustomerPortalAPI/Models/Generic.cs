@@ -11,6 +11,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Data;
 using System.Data.SqlClient;
+using System.Text.RegularExpressions;
 
 namespace BSLCustomerPortalAPI.Models
 {
@@ -141,9 +142,72 @@ namespace BSLCustomerPortalAPI.Models
             return New_MAXId;
         }
 
+        public bool IsValidString(string str)
+        {
+            var valid = true;
+            try
+            {
+                if (char.IsWhiteSpace(Convert.ToChar(str)))
+                {
+                    valid = true;
+                }
+            }
+            catch
+            {
+                valid = false;
+            }
+
+            return valid;
+        }
+
+        public bool IsValidEmail(string email)
+        {
+            var valid = true;
+            try
+            {
+                var emailAddress = new MailAddress(email);
+            }
+            catch
+            {
+                valid = false;
+            }
+            return valid;
+        }
+
+        public bool IsValidMobile(string number)
+        {
+            var valid = true;
+            try
+            {
+                if (Regex.Match(number, @"^[1-9]\d{2}-[1-9]\d{2}-\d{10}$").Success)
+                {
+                    Console.WriteLine("Invalid phone number");
+                    valid = true;
+                }
+            }
+            catch
+            {
+                valid = false;
+            }
+            return valid;
+        }
+
+        public bool IsValidPin(string Pin)
+        {
+            var valid = true;
+            try
+            {
+                var pincondition = !string.IsNullOrEmpty(Pin) && (Pin.Length == 4 || Pin.Length == 6) && Pin.All(char.IsDigit);
+                valid = true;
+            }
+            catch
+            {
+                valid = false;
+            }
+            return valid;
+        }
 
     }
-
 
     public static class Logger
     {
@@ -173,4 +237,6 @@ namespace BSLCustomerPortalAPI.Models
             }
         }
     }
+
+
 }

@@ -157,6 +157,7 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Controllers\CustomerAPIController.cs" />
+    <Compile Include="Controllers\CustomerVisitController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\HRAPIController.cs" />
     <Compile Include="Controllers\InquiryAPIController.cs" />
@@ -165,6 +166,7 @@
     <Compile Include="Controllers\ProductAPIController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
     <Compile Include="Data_Access_Layer\DALCustomer.cs" />
+    <Compile Include="Data_Access_Layer\DALCustomerVisit.cs" />
     <Compile Include="Data_Access_Layer\DALHR.cs" />
     <Compile Include="Data_Access_Layer\DALInquiry.cs" />
     <Compile Include="Data_Access_Layer\DALOrder.cs" />
@@ -174,6 +176,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\clsCustomer.cs" />
+    <Compile Include="Models\clsCustomerVisitor.cs" />
     <Compile Include="Models\clsOrder.cs" />
     <Compile Include="Models\clsProduct.cs" />
     <Compile Include="Models\Generic.cs" />
@@ -185,6 +188,8 @@
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Email\MeetingTemp.html" />
+    <Content Include="Email\ScheduleMeetTemp.html" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
@@ -234,6 +239,7 @@
     <Folder Include="App_Data\" />
     <Folder Include="Data\" />
     <Folder Include="Views\CustomerAPI\" />
+    <Folder Include="Views\CustomerVisit\" />
     <Folder Include="Views\HRAPI\" />
     <Folder Include="Views\InquiryAPI\" />
     <Folder Include="Views\Inquiry\" />
