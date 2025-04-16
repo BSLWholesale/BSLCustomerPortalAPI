@@ -62,5 +62,16 @@ namespace BSLCustomerPortalAPI.Controllers
             _ObjResp = _DALCustomerVisit.Fn_Get_SearchCustomerEmail(objReq);
             return _ObjResp;
         }
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/CustomerVisit/Fn_Get_CustMeetingMasterList")]
+        public List<clsCustomerVisitor> Fn_Get_CustMeetingMasterList(clsCustomerVisitor cs)
+        {
+            var objResp = new List<clsCustomerVisitor>();
+            objResp = _DALCustomerVisit.Fn_Get_CustMeetingMasterList(cs);
+            return objResp;
+        }
+
+
     }
 }

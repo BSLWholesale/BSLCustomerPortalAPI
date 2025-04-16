@@ -590,5 +590,87 @@ namespace BSLCustomerPortalAPI.Data_Access_Layer
             return _ObjResp;
         }
 
+        public List<clsCustomerVisitor> Fn_Get_CustMeetingMasterList(clsCustomerVisitor cs)
+        {
+            var objResp = new List<clsCustomerVisitor>();
+            var _resp = new clsCustomerVisitor();
+            try
+            {
+                if (cs.nLoginId == 0)
+                {
+                    _resp.vErrorMsg = "Login Id is not Supplied.";
+                    objResp.Add(_resp);
+                }
+                else
+                {
+                    _resp.vErrorMsg = "";
+                }
+
+                if (_resp.vErrorMsg == "")
+                {
+                    if (con.State == ConnectionState.Broken)
+                    { con.Close(); }
+                    if (con.State == ConnectionState.Closed)
+                    { con.Open(); }
+
+                    cmd = new SqlCommand("USP_Get_All_CustMeetingMasterList", con);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@LoginId", cs.nLoginId);
+                    cmd.Parameters.AddWithValue("@Status", cs.vStatus);
+
+                    SqlDataAdapter da = new SqlDataAdapter(cmd);
+                    DataSet ds = new DataSet();
+                    da.Fill(ds);
+
+                    int i = 0;
+                    if (ds.Tables[0].Rows.Count > 0)
+                    {
+                        while (ds.Tables[0].Rows.Count > i)
+                        {
+                            var objItem = new clsCustomerVisitor();
+                            objItem.MeetingId = Convert.ToInt32(ds.Tables[0].Rows[i]["MeetingId"]);
+
+                            string followId = Convert.ToString(ds.Tables[0].Rows[i]["FollowUpID"]);
+                            if (followId == "")
+                            {
+                                followId = "0";
+                            }
+                            objItem.vCustomerName = Convert.ToString(ds.Tables[0].Rows[i]["CustomerName"]);
+                            objItem.vMeetingVenue = Convert.ToString(ds.Tables[0].Rows[i]["MeetingVenue"]);
+                            objItem.vMeetingDate = Convert.ToString(ds.Tables[0].Rows[i]["MeetingDate"]);
+                            objItem.vMeetingPurposevisit = Convert.ToString(ds.Tables[0].Rows[i]["MeetingPurposeOfVisit"]);
+                            objItem.vStatus = Convert.ToString(ds.Tables[0].Rows[i]["vStatus"]);
+                            objItem.vClosureRemarks = Convert.ToString(ds.Tables[0].Rows[i]["ClosureRemark"]);
+                            objItem.FollowUpID = Convert.ToInt32(followId);
+                            objItem.vErrorMsg = "success";
+
+                            objResp.Add(objItem);
+                            i++;
+                        }
+                    }
+                    else
+                    {
+                        var objItem = new clsCustomerVisitor();
+                        objItem.vErrorMsg = "No Record Found";
+                        objResp.Add(objItem);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.WriteLog("Function Name : Fn_Get_CustMeetingMasterList", " " + "Error Msg : " + ex.Message.ToString(), new StackTrace(ex, true));
+                var objItem = new clsCustomerVisitor();
+                objItem.vErrorMsg = ex.Message.ToString();
+                objResp.Add(objItem);
+            }
+            finally
+            {
+                //cmd.Dispose();
+                con.Close();
+            }
+            return objResp;
+        }
+
+
     }
 }
