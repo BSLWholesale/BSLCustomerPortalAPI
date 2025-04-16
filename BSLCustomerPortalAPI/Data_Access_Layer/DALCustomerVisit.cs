@@ -671,6 +671,668 @@ namespace BSLCustomerPortalAPI.Data_Access_Layer
             return objResp;
         }
 
+        public clsCustomerVisitor Fn_Close_CustomerMeeting(clsCustomerVisitor cs)
+        {
+            var objResp = new clsCustomerVisitor();
+            try
+            {
+                if (con.State == ConnectionState.Broken)
+                { con.Close(); }
+                if (con.State == ConnectionState.Closed)
+                { con.Open(); }
+
+                cmd = new SqlCommand("USP_Customer_CloseMeeting", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@LoginId", cs.nLoginId);
+                cmd.Parameters.AddWithValue("@MeetingId", cs.MeetingId);
+                cmd.Parameters.AddWithValue("@vClosureRemarks", cs.vClosureRemarks);
+
+                int i = cmd.ExecuteNonQuery();
+                if (i > 0)
+                {
+                    objResp.vErrorMsg = "success";
+                }
+                else
+                {
+                    objResp.vErrorMsg = "error";
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.WriteLog("Function Name : Fn_Close_CustomerMeeting", " " + "Error Msg : " + ex.Message.ToString(), new StackTrace(ex, true));
+                objResp.vErrorMsg = ex.Message.ToString();
+            }
+            finally
+            {
+                cmd.Dispose();
+                con.Close();
+            }
+            return objResp;
+        }
+
+        public clsCustomerVisitor Fn_Update_Meeting(clsCustomerVisitor cs)
+        {
+            var objResp = new clsCustomerVisitor();
+            Generic _generic = new Generic();
+            try
+            {
+                if (cs.nLoginId == 0)
+                {
+                    objResp.vErrorMsg = "Login Id is not supplied";
+                }
+
+                if (string.IsNullOrWhiteSpace(cs.vCustomerName))
+                {
+                    objResp.vErrorMsg = "Customer Name can't be Empty";
+                }
+                else
+                {
+                    if (_generic.IsValidString(cs.vCustomerName))
+                    {
+                        objResp.vErrorMsg = "Please Enter only characters.";
+                    }
+                    else
+                    {
+                        objResp.vErrorMsg = "";
+                    }
+                }
+
+                if (string.IsNullOrWhiteSpace(cs.vEmailId))
+                {
+                    objResp.vErrorMsg = "Email ID can't be Empty";
+                }
+                else
+                {
+                    if (!_generic.IsValidEmail(cs.vEmailId))
+                    {
+                        objResp.vErrorMsg = "Enter Valid Email Id.";
+                    }
+                    else
+                    {
+                        objResp.vErrorMsg = "";
+                    }
+                }
+
+                if (string.IsNullOrWhiteSpace(cs.vMobile))
+                {
+                    objResp.vErrorMsg = "Mobile Number can't be Empty.";
+                }
+                else
+                {
+                    if (!_generic.IsValidMobile(cs.vMobile))
+                    {
+                        objResp.vErrorMsg = "Enter Valid Mobile Number.";
+                    }
+                    else
+                    {
+                        objResp.vErrorMsg = "";
+                    }
+                }
+
+                if (string.IsNullOrWhiteSpace(cs.vCompanyName))
+                {
+                    objResp.vErrorMsg = "Company Name can't be blank.";
+                }
+
+                if (string.IsNullOrWhiteSpace(cs.vAddress1))
+                {
+                    objResp.vErrorMsg = "Address can't be blank.";
+                }
+
+                if (string.IsNullOrWhiteSpace(cs.vState))
+                {
+                    objResp.vErrorMsg = "State can't be blank.";
+                }
+                else
+                {
+                    if (_generic.IsValidString(cs.vState))
+                    {
+                        objResp.vErrorMsg = "Please enter only characters.";
+                    }
+                    else
+                    {
+                        objResp.vErrorMsg = "";
+                    }
+                }
+
+                if (string.IsNullOrWhiteSpace(cs.vCity))
+                {
+                    objResp.vErrorMsg = "City can't be blank.";
+                }
+
+                if (string.IsNullOrWhiteSpace(cs.vPinCode))
+                {
+                    objResp.vErrorMsg = "PIN Code can't be Empty.";
+                }
+                else
+                {
+                    if (!_generic.IsValidPin(cs.vPinCode))
+                    {
+                        objResp.vErrorMsg = "Please Enter only Numbers.";
+                    }
+                    else
+                    {
+                        objResp.vErrorMsg = "";
+                    }
+                }
+
+                if (string.IsNullOrWhiteSpace(cs.vMeetingVenue))
+                {
+                    objResp.vErrorMsg = "Meeting Venue can't be blank.";
+                }
+
+                if (string.IsNullOrWhiteSpace(cs.vMeetingDate))
+                {
+                    objResp.vErrorMsg = "Meeting Date can't be blank.";
+                }
+
+                if (string.IsNullOrWhiteSpace(cs.vMeetingPurposevisit))
+                {
+                    objResp.vErrorMsg = "Meeting Purpose of Visit can't be blank.";
+                }
+
+                if (string.IsNullOrWhiteSpace(cs.vMeetingCommunication))
+                {
+                    objResp.vErrorMsg = "Meeting Communication can't be blank.";
+                }
+
+                if (objResp.vErrorMsg == "")
+                {
+                    if (con.State == ConnectionState.Broken)
+                    { con.Close(); }
+                    if (con.State == ConnectionState.Closed)
+                    { con.Open(); }
+
+                    string strSql = "Update TBL_CustMeetingMaster set MeetingVenue= @MeetingVenue, MeetingDate= @MeetingDate, vStatus = @vStatus,";
+                    strSql = strSql + " MeetingPurposeOfVisit= @MeetingPurposeOfVisit, MeetingCommunication= @MeetingCommunication  where MeetingId= @MeetingId";
+                    strSql = strSql + " AND LoginId = @LoginId";
+                    SqlCommand cmd1 = new SqlCommand(strSql, con);
+                    cmd1.CommandType = CommandType.Text;
+                    cmd1.Parameters.AddWithValue("@MeetingVenue", cs.vMeetingVenue);
+                    cmd1.Parameters.AddWithValue("@MeetingDate", Convert.ToDateTime(cs.vMeetingDate));
+                    if (cs.vClosureRemarks == "SS")
+                    {
+                        cmd1.Parameters.AddWithValue("@vStatus", "Open");
+                    }
+                    else
+                    {
+                        cmd1.Parameters.AddWithValue("@vStatus", cs.vStatus);
+                    }
+                    cmd1.Parameters.AddWithValue("@MeetingPurposeOfVisit", cs.vMeetingPurposevisit);
+                    cmd1.Parameters.AddWithValue("@MeetingCommunication", cs.vMeetingCommunication);
+                    cmd1.Parameters.AddWithValue("@MeetingId", cs.MeetingId);
+                    cmd1.Parameters.AddWithValue("LoginId", cs.nLoginId);
+                    int i1 = cmd1.ExecuteNonQuery();
+
+                    if (i1 >= 1)
+                    {
+                        objResp.vErrorMsg = "";
+                    }
+                    else
+                    {
+                        objResp.vErrorMsg = "Failed to insert Meeting Master.";
+                    }
+                    cmd1.Dispose();
+                    con.Close();
+                }
+
+                //  Insert meeting detail
+
+                if (string.IsNullOrWhiteSpace(Convert.ToString(cs.MeetingId)))
+                {
+                    objResp.vErrorMsg = "Meeting Id can't be blank";
+                }
+                else
+                {
+                    if (objResp.vErrorMsg == "")
+                    {
+                        var html = ""; int SrCount = 1;
+                        if (cs.FollowUpID == 0)
+                        {
+                            if (con.State == ConnectionState.Broken)
+                            { con.Close(); }
+                            if (con.State == ConnectionState.Closed)
+                            { con.Open(); }
+
+                            string strSql = "Delete from TBL_CustMeetingDetail where MeetingId=" + cs.MeetingId + "";
+                            SqlCommand cmd = new SqlCommand(strSql, con);
+                            cmd.ExecuteNonQuery();
+                            cmd.Dispose();
+
+                            foreach (clsProductList info in cs.oProductList)
+                            {
+                                if (info.vProductCategory != "0" && info.vMaterialCode != "0")
+                                {
+                                    string strImagePath = "";
+
+                                    strImagePath = "https://103.67.180.170:8025/web/Images/" + info.vProductCategory + "/" + info.vMaterialCode + ".jpeg";
+
+                                    SqlCommand cmd2 = new SqlCommand("USP_Insert_CustMeetingDetail", con);
+                                    cmd2.CommandType = CommandType.StoredProcedure;
+                                    cmd2.Parameters.AddWithValue("@MeetingId", cs.MeetingId);
+                                    cmd2.Parameters.AddWithValue("@ProductCategory", info.vProductCategory);
+                                    cmd2.Parameters.AddWithValue("@MaterialCode", info.vMaterialCode);
+                                    cmd2.Parameters.AddWithValue("@ScanCode", info.vScanCode);
+                                    int i2 = cmd2.ExecuteNonQuery();
+                                    if (i2 >= 1)
+                                    {
+                                        objResp.vErrorMsg = "Success";
+                                    }
+                                    else
+                                    {
+                                        objResp.vErrorMsg = "Failed to insert Meeting Detail";
+                                    }
+                                    cmd2.Dispose();
+
+                                    html = html + "<tr style='border: 1px solid #D0D0D0;'>";
+                                    html = html + "<td style='text-align: center; border: 1px solid #D0D0D0; background-color: #eaf1be; padding: 10px; color: #10426C; font-size: 16px; font-family: 'Open-sans', sans-serif; font-weight: 400;'>" + SrCount + "</td>";
+                                    html = html + "<td style='text-align: center; border: 1px solid #D0D0D0; background-color: #eaf1be; padding: 10px; color: #10426C; font-size: 16px; font-family: 'Open-sans', sans-serif; font-weight: 400;'>" + info.vMaterialCode + "</td>";
+                                    html = html + "<td style='text-align: center; border: 1px solid #D0D0D0; background-color: #eaf1be; padding: 10px; color: #10426C; font-size: 16px; font-family: 'Open-sans', sans-serif; font-weight: 400;'>" + info.vProductCategory + "</td>";
+                                    html = html + "<td><img alt='img' height='50px' width='50px' src=" + strImagePath + "></td>";
+                                    html = html + "<td style='text-align: right; border: 1px solid #D0D0D0; background-color: #eaf1be; padding: 10px; color: #10426C; font-size: 16px; font-family: 'Open-sans', sans-serif; font-weight: 400;'>";
+                                    SrCount++;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            objResp.vErrorMsg = "Success";
+                        }
+                        objResp.MeetingId = cs.MeetingId;
+                        objResp.vEmailId = cs.vEmailId;
+                        if (cs.vClosureRemarks == "SS")
+                        {
+                            string filename = System.Web.Hosting.HostingEnvironment.MapPath("~/Email/MeetingTemp.html");
+                            string mailbody = System.IO.File.ReadAllText(filename);
+
+                            mailbody = mailbody.Replace("##MEETINGID##", Convert.ToString(cs.MeetingId));
+                            mailbody = mailbody.Replace("##MEETINGDATE##", cs.vMeetingDate);
+                            mailbody = mailbody.Replace("##CUSTOMERNAME##", cs.vCustomerName);
+                            mailbody = mailbody.Replace("##COMPANYNAME##", cs.vCompanyName);
+                            mailbody = mailbody.Replace("##EMAIL##", cs.vEmailId);
+                            mailbody = mailbody.Replace("##CONTACT##", cs.vMobile);
+                            mailbody = mailbody.Replace("##ADDRESS##", cs.vAddress1);
+                            mailbody = mailbody.Replace("##REMARK##", cs.vMeetingCommunication);
+                            mailbody = mailbody.Replace("##PRODUCTROW##", html);
+
+                            string ToEmail = cs.vEmailId;
+
+                            gn.TriggerEmailNoAttachment(mailbody, "Meeting ID " + Convert.ToString(cs.MeetingId) + " Status is Open", ToEmail, "");
+                        }
+                    }
+                    con.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.WriteLog("Function Name : Fn_Update_Meeting", " " + "Error Msg : " + ex.Message.ToString(), new StackTrace(ex, true));
+                objResp.vErrorMsg = ex.Message.ToString();
+            }
+            finally
+            {
+                con.Close();
+            }
+            return objResp;
+        }
+
+        public clsCustomerVisitor Fn_Insert_CustMaster(clsCustomerVisitor cs)
+        {
+            var objResp = new clsCustomerVisitor();
+            Generic _generic = new Generic();
+            try
+            {
+                if (cs.nLoginId == 0)
+                {
+                    objResp.vErrorMsg = "Login Id is not supplied.";
+                }
+
+                if (string.IsNullOrWhiteSpace(cs.vCustomerName))
+                {
+                    objResp.vErrorMsg = "Customer Name can't be Empty";
+                }
+                else
+                {
+                    if (_generic.IsValidString(cs.vCustomerName))
+                    {
+                        objResp.vErrorMsg = "Please Enter only characters.";
+                    }
+                    else
+                    {
+                        objResp.vErrorMsg = "";
+                    }
+                }
+
+                if (string.IsNullOrWhiteSpace(cs.vEmailId))
+                {
+                    objResp.vErrorMsg = "Email ID can't be Empty";
+                }
+                else
+                {
+                    if (!_generic.IsValidEmail(cs.vEmailId))
+                    {
+                        objResp.vErrorMsg = "Enter Valid Email Id.";
+                    }
+                    else
+                    {
+                        objResp.vErrorMsg = "";
+                    }
+                }
+
+                if (string.IsNullOrWhiteSpace(cs.vMobile))
+                {
+                    objResp.vErrorMsg = "Mobile Number can't be Empty.";
+                }
+                else
+                {
+                    if (!_generic.IsValidMobile(cs.vMobile))
+                    {
+                        objResp.vErrorMsg = "Enter Valid Mobile Number.";
+                    }
+                    else
+                    {
+                        objResp.vErrorMsg = "";
+                    }
+                }
+
+                if (string.IsNullOrWhiteSpace(cs.vCompanyName))
+                {
+                    objResp.vErrorMsg = "Company Name can't be blank.";
+                }
+
+                if (string.IsNullOrWhiteSpace(cs.vAddress1))
+                {
+                    objResp.vErrorMsg = "Address can't be blank.";
+                }
+
+                if (string.IsNullOrWhiteSpace(cs.vState))
+                {
+                    objResp.vErrorMsg = "State can't be blank.";
+                }
+                else
+                {
+                    if (_generic.IsValidString(cs.vState))
+                    {
+                        objResp.vErrorMsg = "Please enter only characters.";
+                    }
+                    else
+                    {
+                        objResp.vErrorMsg = "";
+                    }
+                }
+
+                if (string.IsNullOrWhiteSpace(cs.vCity))
+                {
+                    objResp.vErrorMsg = "City can't be blank.";
+                }
+                if (string.IsNullOrWhiteSpace(cs.vPinCode))
+                {
+                    objResp.vErrorMsg = "PIN Code can't be Empty.";
+                }
+                else
+                {
+                    if (!_generic.IsValidPin(cs.vPinCode))
+                    {
+                        objResp.vErrorMsg = "Please Enter only Numbers.";
+                    }
+                    else
+                    {
+                        objResp.vErrorMsg = "";
+                    }
+                }
+
+                if (objResp.vErrorMsg == "")
+                {
+                    if (con.State == ConnectionState.Broken)
+                    { con.Close(); }
+                    if (con.State == ConnectionState.Closed)
+                    { con.Open(); }
+
+                    cmd = new SqlCommand("USP_Insert_CustMaster", con);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@CustName", cs.vCustomerName);
+                    cmd.Parameters.AddWithValue("@Email", cs.vEmailId);
+                    cmd.Parameters.AddWithValue("@Mobile", cs.vMobile);
+                    cmd.Parameters.AddWithValue("@Address", cs.vAddress1);
+                    cmd.Parameters.AddWithValue("@State", cs.vState);
+                    cmd.Parameters.AddWithValue("@City", cs.vCity);
+                    cmd.Parameters.AddWithValue("@PinCode", cs.vPinCode);
+                    cmd.Parameters.AddWithValue("@CompanyName", cs.vCompanyName);
+                    cmd.Parameters.Add("@CustId", SqlDbType.Int).Direction = ParameterDirection.Output;
+                    int i = cmd.ExecuteNonQuery();
+                    if (i >= 1)
+                    {
+                        objResp.vErrorMsg = "";
+                    }
+                    else
+                    {
+                        objResp.vErrorMsg = "Failed to insert customer detail.";
+                    }
+                    cs.CustId = Convert.ToInt32(cmd.Parameters["@CustId"].Value);
+                    cmd.Dispose();
+
+                    con.Close();
+                    if (cs.CustId != 0)
+                    {
+                        objResp.vErrorMsg = "";
+                    }
+                    // Insert meeting master
+
+
+                    if (string.IsNullOrWhiteSpace(cs.vMeetingVenue))
+                    {
+                        objResp.vErrorMsg = "Meeting Venue can't be blank.";
+                    }
+
+                    if (string.IsNullOrWhiteSpace(cs.vMeetingDate))
+                    {
+                        objResp.vErrorMsg = "Meeting Date can't be blank.";
+                    }
+
+                    if (string.IsNullOrWhiteSpace(cs.vMeetingPurposevisit))
+                    {
+                        objResp.vErrorMsg = "Meeting Purpose of Visit can't be blank.";
+                    }
+
+                    if (string.IsNullOrWhiteSpace(cs.vMeetingCommunication))
+                    {
+                        objResp.vErrorMsg = "Meeting Communication can't be blank.";
+                    }
+
+                    if (objResp.vErrorMsg == "")
+                    {
+                        if (con.State == ConnectionState.Broken)
+                        { con.Close(); }
+                        if (con.State == ConnectionState.Closed)
+                        { con.Open(); }
+
+                        SqlCommand cmd11 = new SqlCommand("USP_Insert_CustMeetingMaster", con);
+                        cmd11.CommandType = CommandType.StoredProcedure;
+                        cmd11.Parameters.AddWithValue("@MeetingId", cs.MeetingId);
+                        cmd11.Parameters.AddWithValue("@CustId", cs.CustId);
+                        cmd11.Parameters.AddWithValue("@MeetingVenue", cs.vMeetingVenue);
+                        cmd11.Parameters.AddWithValue("@MeetingDate", cs.vMeetingDate);
+                        cmd11.Parameters.AddWithValue("@MeetingPurposeOfVisit", cs.vMeetingPurposevisit);
+                        cmd11.Parameters.AddWithValue("@MeetingCommunication", cs.vMeetingCommunication);
+                        cmd11.Parameters.AddWithValue("@LoginId", cs.nLoginId);
+                        cmd11.Parameters.AddWithValue("@Status", "Open");
+                        cmd11.Parameters.AddWithValue("@QueryType", "Update");
+                        int j = cmd11.ExecuteNonQuery();
+                        if (j >= 1)
+                        {
+                            objResp.vErrorMsg = "";
+                        }
+                        else
+                        {
+                            objResp.vErrorMsg = "Failed to insert Meeting Master.";
+                        }
+                        cmd11.Dispose();
+                        con.Close();
+                    }
+
+                    //  Insert meeting detail
+
+                    if (string.IsNullOrWhiteSpace(Convert.ToString(cs.MeetingId)))
+                    {
+                        objResp.vErrorMsg = "Meeting Id can't be blank";
+                    }
+                    else
+                    {
+                        if (objResp.vErrorMsg == "")
+                        {
+                            if (con.State == ConnectionState.Broken)
+                            { con.Close(); }
+                            if (con.State == ConnectionState.Closed)
+                            { con.Open(); }
+
+                            foreach (clsProductList info in cs.oProductList)
+                            {
+                                if (info.vProductCategory != "0" && info.vMaterialCode != "0")
+                                {
+
+                                    SqlCommand cmd2 = new SqlCommand("USP_Insert_CustMeetingDetail", con);
+                                    cmd2.CommandType = CommandType.StoredProcedure;
+                                    cmd2.Parameters.AddWithValue("@MeetingId", cs.MeetingId);
+                                    cmd2.Parameters.AddWithValue("@ProductCategory", info.vProductCategory);
+                                    cmd2.Parameters.AddWithValue("@MaterialCode", info.vMaterialCode);
+                                    cmd2.Parameters.AddWithValue("@ScanCode", info.vScanCode);
+                                    int i2 = cmd2.ExecuteNonQuery();
+                                    if (i2 >= 1)
+                                    {
+                                        objResp.vErrorMsg = "Success";
+                                    }
+                                    else
+                                    {
+                                        objResp.vErrorMsg = "Failed to insert Meeting Detail";
+                                    }
+                                    cmd2.Dispose();
+                                }
+                            }
+                            con.Close();
+                            objResp.MeetingId = cs.MeetingId;
+                            objResp.vEmailId = cs.vEmailId;
+                            objResp.vCustomerName = cs.vCustomerName;
+                        }
+                        con.Close();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.WriteLog("Function Name : Fn_Insert_CustMaster", " " + "Error Msg : " + ex.Message.ToString(), new StackTrace(ex, true));
+                objResp.vErrorMsg = ex.Message.ToString();
+            }
+            finally
+            {
+                cmd.Dispose();
+                con.Close();
+            }
+            return objResp;
+        }
+
+        public clsCustomerVisitor Fn_Send_Mail_Meeting_Communication(clsCustomerVisitor cs)
+        {
+            var objResp = new clsCustomerVisitor();
+            try
+            {
+                if (con.State == ConnectionState.Broken)
+                { con.Close(); }
+                if (con.State == ConnectionState.Closed)
+                { con.Open(); }
+
+                string strSql = "Update TBL_CustMeetingMaster set vMailCommuniction= @vMailCommuniction where MeetingId= @MeetingId";
+                cmd = new SqlCommand(strSql, con);
+                cmd.CommandType = CommandType.Text;
+                cmd.Parameters.AddWithValue("@vMailCommuniction", cs.vMeetingCommunication);
+                cmd.Parameters.AddWithValue("@MeetingId", cs.MeetingId);
+                int i;
+                i = cmd.ExecuteNonQuery();
+                if (i > 0)
+                {
+                    string strSubject = "##" + cs.MeetingId + "## Meeting With " + cs.vCustomerName;
+                    Fn_Send_Mail(cs.vEmailId, strSubject, cs.vMeetingCommunication);
+                    objResp.vErrorMsg = "Success";
+                }
+                else
+                {
+                    objResp.vErrorMsg = "Mail communication Failed";
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.WriteLog("Function Name : Fn_Send_Mail_Meeting_Communication", " " + "Error Msg : " + ex.Message.ToString(), new StackTrace(ex, true));
+                objResp.vErrorMsg = ex.Message.ToString();
+            }
+            finally
+            {
+                con.Close();
+                //cmd.Dispose();
+            }
+            return objResp;
+        }
+
+
+        public void Fn_Send_Mail(string vToMailID, string vSubject, string vMessage)
+        {
+            MailMessage mail = new MailMessage();
+            mail.To.Add(vToMailID);
+            mail.From = new MailAddress(ConfigurationManager.AppSettings["Email"]);
+            mail.Subject = vSubject;
+            string Body = vMessage;
+            mail.Body = Body;
+            mail.IsBodyHtml = true;
+            SmtpClient smtp = new SmtpClient();
+            smtp.Host = ConfigurationManager.AppSettings["Server"];
+            smtp.Port = Convert.ToInt32(ConfigurationManager.AppSettings["Port"]);
+            smtp.UseDefaultCredentials = false;
+            smtp.Credentials = new System.Net.NetworkCredential(ConfigurationManager.AppSettings["Email"], ConfigurationManager.AppSettings["EPwd"]); // Enter seders User name and password       
+            smtp.EnableSsl = true;
+            smtp.Send(mail);
+        }
+
+        public clsProductList Fn_Get_MaterialCode(clsProductList objReq)
+        {
+            var _productmodel = new clsProductList();
+
+            try
+            {
+                if (con.State == ConnectionState.Broken)
+                { con.Close(); }
+                if (con.State == ConnectionState.Closed)
+                { con.Open(); }
+
+                cmd = new SqlCommand("USP_Get_MaterialCode_BY_ScanCode", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@vScanCode", objReq.vScanCode);
+                cmd.Parameters.AddWithValue("@vTBLName", objReq.vTBLName);
+                cmd.Parameters.AddWithValue("@vProductCategory", objReq.vProductCategory);
+
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    _productmodel.vScanCode = Convert.ToString(ds.Tables[0].Rows[0][0]);
+                    _productmodel.vMaterialCode = Convert.ToString(ds.Tables[0].Rows[0][0]);
+                    _productmodel.vProductCategory = Convert.ToString(ds.Tables[0].Rows[0][1]);
+                    _productmodel.vErrorMsg = "Success";
+                }
+                else
+                {
+                    _productmodel.vErrorMsg = "Material code not found.";
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.WriteLog("Function Name : Fn_Get_MaterialCode", " " + "Error Msg : " + ex.Message.ToString(), new StackTrace(ex, true));
+                _productmodel.vErrorMsg = ex.Message.ToString();
+            }
+            finally
+            {
+                con.Close();
+                cmd.Dispose();
+            }
+            return _productmodel;
+        }
 
     }
 }

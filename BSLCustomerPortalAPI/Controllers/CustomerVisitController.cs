@@ -72,6 +72,50 @@ namespace BSLCustomerPortalAPI.Controllers
             return objResp;
         }
 
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/CustomerVisit/Fn_Close_CustomerMeeting")]
+        public clsCustomerVisitor Fn_Close_CustomerMeeting(clsCustomerVisitor cs)
+        {
+            var objResp = new clsCustomerVisitor();
+            objResp = _DALCustomerVisit.Fn_Close_CustomerMeeting(cs);
+            return objResp;
+        }
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/CustomerVisit/Fn_Update_Meeting")]
+        public clsCustomerVisitor Fn_Update_Meeting(clsCustomerVisitor cs)
+        {
+            var objResp = new clsCustomerVisitor();
+            objResp = _DALCustomerVisit.Fn_Update_Meeting(cs);
+            return objResp;
+        }
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/CustomerVisit/Fn_Insert_CustMaster")]
+        public clsCustomerVisitor Fn_Insert_CustMaster(clsCustomerVisitor cs)
+        {
+            var objResp = new clsCustomerVisitor();
+            objResp = _DALCustomerVisit.Fn_Insert_CustMaster(cs);
+            return objResp;
+        }
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/CustomerVisit/Fn_Send_Mail_Meeting_Communication")]
+        public clsCustomerVisitor Fn_Send_Mail_Meeting_Communication(clsCustomerVisitor cs)
+        {
+            var objResp = new clsCustomerVisitor();
+            objResp = _DALCustomerVisit.Fn_Send_Mail_Meeting_Communication(cs);
+            return objResp;
+        }
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/CustomerVisit/Fn_Get_MaterialCode")]
+        public clsProductList Fn_Get_MaterialCode(clsProductList objReq)
+        {
+            var _productmodel = new clsProductList();
+            _productmodel = _DALCustomerVisit.Fn_Get_MaterialCode(objReq);
+            return _productmodel;
+        }
 
     }
 }
