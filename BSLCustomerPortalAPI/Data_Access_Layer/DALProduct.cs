@@ -775,6 +775,54 @@ namespace BSLCustomerPortalAPI.Data_Access_Layer
         }
 
 
+        public List<clsAutoCompliteResponse> Fn_Get_GlobalSearch(clsAutoCompliteRequest obj)
+        {
+            var objResp = new List<clsAutoCompliteResponse>();
+            try
+            {
+                if (con.State == ConnectionState.Broken)
+                { con.Close(); }
+                if (con.State == ConnectionState.Closed)
+                { con.Open(); }
+
+                SqlCommand cmd = new SqlCommand("USP_GlobalSearch", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@SearchKeyword", obj.SearchKeyword);
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+
+                int i = 0;
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        var objItem = new clsAutoCompliteResponse();
+                        objItem.SearchKeyword = Convert.ToString(ds.Tables[0].Rows[i]["SearchKeyword"]) + "--" + Convert.ToString(ds.Tables[0].Rows[i]["SearchField"]) + "--" + Convert.ToString(ds.Tables[0].Rows[i]["ProductType"]);
+                        // objItem.SearchField = Convert.ToString(ds.Tables[0].Rows[i]["SearchField"]);
+                        objResp.Add(objItem);
+                        i++;
+                    }
+                }
+                else
+                {
+
+                }
+                cmd.Dispose();
+            }
+            catch (Exception exp)
+            {
+                Logger.WriteLog("Function Name : Fn_Get_GlobalSearch", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                exp.Message.ToString();
+            }
+            finally
+            {
+                con.Close();
+            }
+            return objResp;
+        }
+
+
 
     }
 }

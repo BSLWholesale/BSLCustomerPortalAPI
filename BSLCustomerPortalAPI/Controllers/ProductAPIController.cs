@@ -97,6 +97,14 @@ namespace BSLCustomerPortalAPI.Controllers
             return _RMGCatalogue;
         }
 
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/ProductAPI/Fn_Get_GlobalSearch")]
+        public List<clsAutoCompliteResponse> Fn_Get_GlobalSearch(clsAutoCompliteRequest obj)
+        {
+            var objResp = new List<clsAutoCompliteResponse>();
+            objResp = _DALProduct.Fn_Get_GlobalSearch(obj);
+            return objResp;
+        }
 
     }
 }

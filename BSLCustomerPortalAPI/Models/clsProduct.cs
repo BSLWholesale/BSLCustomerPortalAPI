@@ -168,5 +168,15 @@ namespace BSLCustomerPortalAPI.Models
         public string vErrorMsg { get; set; }
     }
 
+    public class clsAutoCompliteRequest
+    {
+        public string SearchKeyword { get; set; }
+    }
+    public class clsAutoCompliteResponse
+    {
+        public string SearchKeyword { get; set; }
+        public string SearchField { get; set; }
+    }
+
 
 }
